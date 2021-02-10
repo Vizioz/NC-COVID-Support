@@ -69,6 +69,8 @@ import { dayFilters, booleanFilters, dayAny } from './constants'
 import { theme } from 'theme.config'
 import ThemeHeader from 'theme.header'
 
+import ProviderFactory from './provider/dataProviderFactory'
+
 function extend(obj, src) {
   for (var key in src) {
     obj.push(src[key])
@@ -99,6 +101,7 @@ export default {
     currentPage: 'fetchData'
   },
   created() {
+    ProviderFactory.getProvider('umbraco')
     this.fetchData()
   },
   components: {
@@ -115,6 +118,7 @@ export default {
     const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const mobileMediaQuery = window.matchMedia('(min-width: 768px)')
     return {
+      provider: null,
       entries: null,
       need: 'none',
       day: dayAny,
@@ -200,7 +204,7 @@ export default {
       this.$root.updateLang(item.iso)
     },
     async fetchData() {
-      const res = await fetch(theme.data.spreadsheetUrl)
+      const res = await fetch(theme.data.url)
       const entries = await res.json()
 
       // if (entries !== null) {

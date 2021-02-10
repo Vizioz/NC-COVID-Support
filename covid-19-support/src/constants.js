@@ -91,3 +91,8 @@ export const needCategories = {
   ],
   regions: ['Orange']
 }
+
+export const dataProviderTypes = {
+  GoogleSpreadsheet: "googleSpreadsheet",
+  Umbraco: "umbraco"
+}
