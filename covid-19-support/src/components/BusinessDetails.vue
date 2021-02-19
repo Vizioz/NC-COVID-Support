@@ -215,7 +215,7 @@ export default {
     toggleExpand() {
       this.$emit('toggle-expanding-details')
     },
-    optionIcon(opt) {
+    getOptionIcon(opt) {
       return 'fas ' + optionIcon(opt)
     },
     getAddress: getAddress

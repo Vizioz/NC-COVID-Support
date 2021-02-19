@@ -21,11 +21,35 @@
           {{ item.marker.address }}{{ item.marker.addresss !== '' ? ',' : '' }}
           {{ item.marker.city }}
         </span>
-        <template v-for="(opt, index) in item.marker.options">
+        <template v-if="hasOption(item.marker, 'discountmedical')">
+          <span :title="$tc('label.discountmedical', 1)"><i class="fas fa-user-md" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'familymeal')">
+          <span :title="$tc('category.family', 2)"><i class="fas fa-user-friends" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'mealstudent')">
+          <span :title="$tc('label.mealstudent', 1)"><i class="fas fa-school" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'mealpublic')">
+          <span :title="$tc('label.mealpublic', 1)"><i class="fas fa-users" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'drivethru')">
+          <span :title="$t('label.drivethru')"><i class="fas fa-car-side" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'curbside')">
+          <span :title="$tc('label.curbside', 1)"><i class="fas fa-car" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'orderonline')">
+          <span :title="$t('label.orderonline')"><i class="fas fa-mouse" /></span>
+        </template>
+        <template v-if="hasOption(item.marker, 'delivery')">
+          <span :title="$t('label.delivery')"><i class="fas fa-shipping-fast" /></span>
+        </template>
+        <!-- <template v-for="(opt, index) in item.marker.options">
           <span v-bind:key="index" :title="$tc('label.' + opt.toLowerCase(), 1)">
             <i :class="getClassIcon(opt)" />
           </span>
-        </template>
+        </template> -->
       </b-list-group-item>
     </b-list-group>
   </div>
@@ -68,6 +92,9 @@ export default {
     },
     getClassIcon(option) {
       return 'fas ' + optionIcon(option)
+    },
+    hasOption(marker, option) {
+      return marker.options.includes(option)
     }
   }
 }

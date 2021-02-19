@@ -39,7 +39,7 @@ async function getByCategory(baseUrl) {
   // TODO: filter entries
   console.log(entries)
   console.log(baseUrl)
-  return ['1', '2']
+  return entries
 }
 
 /**
@@ -48,8 +48,10 @@ async function getByCategory(baseUrl) {
  * @param {string} baseUrl
  */
 async function getResource(baseUrl) {
+  // TODO: get resource
+  console.log(entries)
   console.log(baseUrl)
-  return ['1', '2']
+  return entries[0]
 }
 
 /**

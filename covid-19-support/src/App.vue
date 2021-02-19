@@ -236,7 +236,6 @@ export default {
         t.showList = val !== 0
         t.highlightFilters = []
         t.locationData.currentBusiness = null
-        console.log(t.markers)
       })
 
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
