@@ -30,7 +30,7 @@ export const theme = {
   ],
   data: {
     provider: 'umbraco', //'googleSpreadsheet',
-    url: 'https://localhost:44320//api/v1' //'https://spreadsheets.google.com/feeds/list/1NNo23idWdFofp5LbBS_3S6EQfzgbe1sVgr2GRAjucA0/1/public/values?alt=json'
+    url: 'https://nccovid.vizioz.com/api/v1' //'https://spreadsheets.google.com/feeds/list/1NNo23idWdFofp5LbBS_3S6EQfzgbe1sVgr2GRAjucA0/1/public/values?alt=json'
   },
   maps: {
     normal: {
