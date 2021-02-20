@@ -128,7 +128,7 @@ export default {
     return {
       provider: null,
       entries: null,
-      need: 0,
+      need: 'none',
       day: dayAny,
       isFilterOpen: true,
       language: { name: 'English', iso: 'en' },
