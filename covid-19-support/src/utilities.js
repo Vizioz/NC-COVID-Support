@@ -76,7 +76,7 @@ export function getShortAddress(marker) {
   var address = marker.address ? marker.address + ', ' : ''
   address = address + (marker.city ? marker.city : '')
 
-  return address + (marker.zip ? marker.zip : '')
+  return address
 }
 
 // See: https://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript
