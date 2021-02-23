@@ -43,13 +43,22 @@
         ></l-circle-marker>
         <v-marker-cluster ref="marks" :options="clusterOptions">
           <!-- @clusterclick="click()" @ready="ready" -->
-          <l-marker
+          <div v-for="(item, index) in filteredMarkers" v-bind:key="index">
+            <l-marker
+              :lat-lng="latLng(item.marker.lat, item.marker.lng)"
+              :icon="selectedIcon(location.currentBusiness !== null && item.marker.id === location.currentBusiness.id, item)"
+              v-if="item.marker.lat !== undefined && item.marker.lng !== undefined"
+              @click="$emit('location-selected', { locValue: index, locId: item.marker.id, isSetByMap: true })"
+            ></l-marker>
+          </div>
+          <!-- <l-marker
             :lat-lng="latLng(item.marker.lat, item.marker.lng)"
             :icon="selectedIcon(location.currentBusiness !== null && item.marker.id === location.currentBusiness.id, item)"
             v-for="(item, index) in filteredMarkers"
+            v-if="item.marker.lat !== undefined && item.marker.lng !== undefined"
             v-bind:key="index"
             @click="$emit('location-selected', { locValue: index, locId: item.marker.id, isSetByMap: true })"
-          ></l-marker>
+          ></l-marker> -->
         </v-marker-cluster>
         <l-control position="bottomright" class="user-location-button">
           <a

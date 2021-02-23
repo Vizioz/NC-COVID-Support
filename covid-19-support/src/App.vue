@@ -40,7 +40,7 @@
 
         <resource-map
           :filteredMarkers="filteredMarkers"
-          :class="{ noselection: need == 'none' }"
+          :class="{ noselection: need == 0 }"
           :location="locationData"
           :attribution="attribution"
           @location-selected="locationSelected"
@@ -128,7 +128,7 @@ export default {
     return {
       provider: null,
       entries: null,
-      need: 'none',
+      need: 0,
       day: dayAny,
       isFilterOpen: true,
       language: { name: 'English', iso: 'en' },
@@ -174,7 +174,7 @@ export default {
         return
       }
 
-      if (this.need !== 'none') {
+      if (this.need !== 0) {
         return
       }
 
@@ -226,11 +226,14 @@ export default {
           markers.map((marker) => ({
             marker,
             oc: t.isOpen(marker),
-            distance: haversineDistance([t.centroid.lat, t.centroid.lng], [marker.lat, marker.lng], true)
+            distance:
+              marker.lat !== undefined && marker.lng !== undefined
+                ? haversineDistance([t.centroid.lat, t.centroid.lng], [marker.lat, marker.lng], true)
+                : 0
           }))
         ).sort(sortByDistance)
 
-        t.filterOptions = filters.split(',')
+        t.filterOptions = filters.split(',').filter((opt) => opt !== null && opt != undefined && opt !== '')
         t.markers = retList
         t.need = val
         t.showList = val !== 0
@@ -297,8 +300,14 @@ export default {
     },
     highlightFilteredMarkers() {
       var contained = [] //makers in map boundingbox
+
       this.filteredMarkers.forEach((m) => {
-        if (this.bounds.contains(latLng(m.marker.lat, m.marker.lng))) contained.push(m)
+        if (m.marker.category === 'socialServices') {
+          contained.push(m)
+        }
+        if (m.marker.lat !== undefined && m.marker.lng != undefined && this.bounds.contains(latLng(m.marker.lat, m.marker.lng))) {
+          contained.push(m)
+        }
       })
 
       if (!this.isAnyDaySelected(this.day)) {

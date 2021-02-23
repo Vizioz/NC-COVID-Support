@@ -18,8 +18,7 @@
         <div v-if="!item.oc" class="closed">{{ getClosedMessage() }}</div>
         <span class="resultAddress">
           <span v-if="!!item.marker.classificationType">{{ item.marker.classificationType }}<br /></span>
-          {{ item.marker.address }}{{ item.marker.addresss !== '' ? ',' : '' }}
-          {{ item.marker.city }}
+          {{ getAddress(item.marker) }}
         </span>
         <template v-if="hasOption(item.marker, 'discountmedical')">
           <span :title="$tc('label.discountmedical', 1)"><i class="fas fa-user-md" /></span>
@@ -58,7 +57,7 @@
 <script>
 import { weekdaysJs } from '../constants'
 
-import { optionIcon } from '../utilities'
+import { getShortAddress, optionIcon } from '../utilities'
 
 export default {
   name: 'ResultsList',
@@ -83,6 +82,9 @@ export default {
     }
   },
   methods: {
+    getAddress(marker) {
+      return getShortAddress(marker)
+    },
     getClosedMessage() {
       if (this.selectedDay > 6) {
         return this.$t(`label.closed-today`)
