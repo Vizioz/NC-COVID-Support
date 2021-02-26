@@ -94,6 +94,8 @@ h6,
 }
 
 #page-content-wrapper {
+  position: fixed;
+  overflow-y: hidden;
   @include media-breakpoint-up(sm) {
     min-width: 0;
   }
