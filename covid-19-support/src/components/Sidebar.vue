@@ -243,17 +243,20 @@ export default {
   background: theme-color('secondary');
   z-index: 1037;
   position: fixed;
+  display: none;
 
   &.business {
     @include media-breakpoint-down(sm) {
       //transform: translateY(calc(100vh - 280px));
       z-index: 9999;
+      display: block;
     }
   }
 
   &.showExpandedDetails {
     @include media-breakpoint-down(sm) {
       transform: translateY(-92px) !important;
+      display: block;
     }
   }
 
@@ -272,6 +275,7 @@ export default {
     width: $tablet-sidebar-width;
     transform: translateX(-100%);
     position: absolute;
+    display: block;
   }
 
   @include media-breakpoint-up(lg) {
