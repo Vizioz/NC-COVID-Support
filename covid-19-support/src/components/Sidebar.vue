@@ -242,6 +242,7 @@ export default {
   height: 100%;
   background: theme-color('secondary');
   z-index: 1037;
+  position: fixed;
 
   &.business {
     @include media-breakpoint-down(sm) {
@@ -270,6 +271,7 @@ export default {
     height: auto;
     width: $tablet-sidebar-width;
     transform: translateX(-100%);
+    position: absolute;
   }
 
   @include media-breakpoint-up(lg) {
