@@ -16,7 +16,8 @@
               <div class="busName">
                 <h5>{{ business.name }}</h5>
                 <span v-if="!!business.providerAddLoc">{{ business.providerAddLoc }}</span>
-                <template v-if="!!business.classificationType">{{ business.classificationType }}</template>
+                <div v-if="!!business.classificationType">{{ business.classificationType }}</div>
+                <div v-if="!!business.description">{{ business.description }}</div>
               </div>
             </div>
           </div>
@@ -32,7 +33,7 @@
               <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
             </p>
           </div>
-          <p class="business-options" v-if="!snippet">
+          <p class="business-options" v-if="!snippet && business.options.length">
             <icon-list-item
               v-for="(opt, index) in business.options"
               v-bind:key="index"
@@ -40,6 +41,7 @@
               :title="$tc('label.' + opt)"
             />
           </p>
+          <tag-list :tags="business.tags"></tag-list>
 
           <p v-if="!snippet" class="business-actions">
             <icon-list-item v-if="business.contact" icon="fa-phone-alt" :title="business.contact" :link="'tel:' + business.contact" />
@@ -77,7 +79,7 @@
             />
           </p>
           <p v-if="snippet" class="business-actions">
-            <span class="list-item" @click.stop="getDirections">
+            <span class="list-item" v-if="getAddress(business) !== ''" @click.stop="getDirections">
               <icon-list-item
                 class="directions"
                 :class="directionsBool ? 'selected' : 'a'"
@@ -86,17 +88,28 @@
                 link="#"
               />
             </span>
-            <span @click.stop class="list-item">
-              <icon-list-item v-if="business.contact" icon="fa-phone-alt" :title="$t('call')" :link="'tel:' + business.contact" />
+            <span @click.stop class="list-item" v-if="business.contact">
+              <icon-list-item icon="fa-phone-alt" :title="$t('call')" :link="'tel:' + business.contact" />
             </span>
-            <span @click.stop class="list-item">
-              <icon-list-item v-if="business.webLink" icon="fa-globe" :title="$t('website')" :link="business.webLink" />
+            <span @click.stop class="list-item" v-if="business.webLink">
+              <icon-list-item icon="fa-globe" :title="$t('website')" :link="business.webLink" />
             </span>
           </p>
           <p class="directions-options-expanded" id="directions-options-snippet" v-if="snippet && directionsBool" @click.stop>
             <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
-            <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
-            <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
+            <icon-list-item
+              v-if="iOS && business.lat && business.lng"
+              icon="fa fa-apple"
+              title="Apple Maps"
+              :link="appleDirectionsLink(business)"
+            />
+            <icon-list-item
+              v-if="business.lat && business.lng"
+              icon="fa-waze"
+              iconSet="fab"
+              title="Waze"
+              :link="wazeDirectionsLink(business)"
+            />
           </p>
 
           <opening-hours
@@ -114,6 +127,9 @@
           <opening-hours v-if="!snippet" :title="$t('label.holidayhours')" :description="business.holidaysHours"></opening-hours>
 
           <div v-if="!snippet">
+            <template v-if="business.longDescription">
+              <p>{{ business.longDescription }}</p>
+            </template>
             <template v-if="business.instructions">
               <p>
                 <b>{{ $t('label.instructions') }}:</b><br />{{ business.instructions }}
@@ -142,12 +158,14 @@
 <script>
 import OpeningHours from './OpeningHours.vue'
 import IconListItem from './IconListItem.vue'
+import TagList from './TagList.vue'
 import { businessIcon, optionIcon, getAddress } from '../utilities'
 export default {
   name: 'BusinessDetails',
   components: {
     OpeningHours,
-    IconListItem
+    IconListItem,
+    TagList
   },
   data() {
     return {
@@ -167,10 +185,12 @@ export default {
     },
     addressUrl(business) {
       var address = business.address
-      address = address.replace(/\s/g, '%20')
-      var city = business.city.replace(/\s/g, '%20')
-      var state = business.state.replace(/\s/g, '%20')
-      address = address + '%2C%20' + city + '%2C%20' + state + '%20' + business.zip
+      if (address) {
+        address = address.replace(/\s/g, '%20')
+        var city = business.city.replace(/\s/g, '%20')
+        var state = business.state.replace(/\s/g, '%20')
+        address = address + '%2C%20' + city + '%2C%20' + state + '%20' + business.zip
+      }
       return address
     },
     appleDirectionsLink(business) {
@@ -188,6 +208,9 @@ export default {
     getDirections() {
       this.directionsBool = !this.directionsBool
       this.$emit('business-resize')
+    },
+    hasDirections(business) {
+      return business.address || (business.lat && business.lng)
     },
     expandBusinessDetails() {
       if (this.snippet) {

@@ -49,14 +49,16 @@
             <i :class="getClassIcon(opt)" />
           </span>
         </template> -->
+        <tag-list :tags="item.marker.tags"></tag-list>
       </b-list-group-item>
     </b-list-group>
   </div>
 </template>
 
 <script>
-import { weekdaysJs } from '../constants'
+import TagList from './TagList.vue'
 
+import { weekdaysJs } from '../constants'
 import { getShortAddress, optionIcon } from '../utilities'
 
 export default {
@@ -67,7 +69,9 @@ export default {
       today: new Date().getDay()
     }
   },
-  components: {},
+  components: {
+    TagList
+  },
   props: {
     filteredMarkers: Array,
     location: { locValue: Number, isSetByMap: Boolean },

@@ -1,9 +1,10 @@
 <template>
-  <div class="openhours" v-if="days.length > 0">
+  <div class="openhours" v-if="days.length > 0 || description">
     <div class="oh-title">
       <b>{{ title }}</b>
     </div>
-    <table>
+    <div v-if="description">{{ description }}</div>
+    <table v-if="openHours">
       <tr v-for="(item, index) in days" :key="index">
         <!-- <i class="fas" :class="icon" /> -->
         <td class="oh-name">{{ item.name }}</td>
