@@ -1,5 +1,3 @@
-import { dataProviderTypes } from '../../constants'
-
 export const theme = {
   settings: {
     initialMapCenter: {
@@ -16,7 +14,7 @@ export const theme = {
     }
   ],
   data: {
-    providerType: dataProviderTypes.GoogleSpreadsheet,
+    provider: 'googleSpreadsheet',
     url: 'https://spreadsheets.google.com/feeds/list/14XnTyhSqfRT7xh7QA4F9ydTU9x6wGiRiKMSieT5sG4o/1/public/values?alt=json'
   },
   maps: {

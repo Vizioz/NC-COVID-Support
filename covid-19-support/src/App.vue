@@ -3,7 +3,7 @@
     <app-header :language="language.name" @language-selected="changeLanguage" :socialMedia="socialMediaico">
       <theme-header></theme-header>
     </app-header>
-    <mobile-search-filters :need="need" :warning="warningMobile" @need-selected="needSelected" />
+    <mobile-search-filters :need="need" :neededCategories="neededCategories" :warning="warningMobile" @need-selected="needSelected" />
     <!-- <mobile-map-list-toggle
       :is-filter-open="isFilterOpen"
       :is-resource-selected="locationData.currentBusiness != null && showList !== true"
@@ -20,6 +20,7 @@
         :location="locationData"
         :show-list="showList"
         :warning="warning"
+        :neededCategories="neededCategories"
         @location-selected="locationSelected"
         @toggle="isFilterOpen = !isFilterOpen"
         @need-selected="needSelected"
@@ -54,6 +55,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import AppHeader from './components/Header.vue'
 import Sidebar from './components/Sidebar.vue'
 import Highlights from './components/Highlights.vue'
@@ -69,7 +71,7 @@ import { dayFilters, booleanFilters, dayAny } from './constants'
 import { theme } from 'theme.config'
 import ThemeHeader from 'theme.header'
 
-import ProviderFactory from './provider/dataProviderFactory'
+import ProviderFactory from './api/apiProvider'
 
 function extend(obj, src) {
   for (var key in src) {
@@ -101,8 +103,12 @@ export default {
     currentPage: 'fetchData'
   },
   created() {
-    ProviderFactory.getProvider('umbraco')
-    this.fetchData()
+    let t = this
+    ProviderFactory.apiProvider(theme.data.provider, theme.data.url).then(function (r) {
+      Vue.prototype.$api = r
+      t.fetchCategories()
+      t.fetchData()
+    })
   },
   components: {
     MobileSearchFilters,
@@ -140,7 +146,8 @@ export default {
       attribution: null,
       socialMediaico: theme.socialMedia,
       warning: theme.warning,
-      warningMobile: theme.warning
+      warningMobile: theme.warning,
+      neededCategories: null
     }
   },
   mounted() {
@@ -203,17 +210,13 @@ export default {
       this.language = item
       this.$root.updateLang(item.iso)
     },
+    async fetchCategories() {
+      const categories = await this.$api.getMenuCategories()
+      this.neededCategories = categories
+    },
     async fetchData() {
-      const res = await fetch(theme.data.url)
-      const entries = await res.json()
-
-      // if (entries !== null) {
-      //   entries.forEach(c => {
-      //     c
-      //   });
-      // }
-
-      this.entries = entries.feed.entry
+      const entries = await this.$api.fetchData()
+      this.entries = entries
     },
     updateShowList(val) {
       this.showList = val

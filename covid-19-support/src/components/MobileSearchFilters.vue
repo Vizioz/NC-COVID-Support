@@ -1,6 +1,10 @@
 <template>
   <div class="mobile-search-filters">
-    <search-filters :need="need" @need-selected="(opt) => $emit('need-selected', opt)"></search-filters>
+    <search-filters
+      :need="need"
+      :neededCategories="neededCategories"
+      @need-selected="(opt) => $emit('need-selected', opt)"
+    ></search-filters>
     <b-alert v-if="warning" v-model="showWarning" variant="warning" dismissible>{{ warning }}</b-alert>
   </div>
 </template>
@@ -10,7 +14,8 @@ import SearchFilters from './SearchFilters'
 export default {
   props: {
     need: String,
-    warning: String
+    warning: String,
+    neededCategories: Array
   },
   components: {
     SearchFilters

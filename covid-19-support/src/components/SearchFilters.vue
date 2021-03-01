@@ -8,8 +8,6 @@
 </template>
 
 <script>
-import { needCategories } from '../constants'
-
 export default {
   data() {
     return {
@@ -18,20 +16,24 @@ export default {
     }
   },
   props: {
-    need: String
+    need: String,
+    neededCategories: Array
   },
   computed: {
     needOptionGroups() {
-      const categories = needCategories.categories
       const needOptions = [{ value: 'none', text: this.$tc('label.selectacategory', 1) }]
-      categories.forEach((category) => {
+
+      if (!this.neededCategories) {
+        return needOptions
+      }
+
+      this.neededCategories.forEach((category) => {
         if (category.subcategories != undefined) {
           const label = category.name
           const myOptions = []
           category.subcategories.forEach((subcategory) => {
-            const text = 'category.' + subcategory.code
             myOptions.push({
-              text: this.$t(text),
+              text: subcategory.name,
               value: subcategory.code
             })
           })
@@ -40,9 +42,8 @@ export default {
             options: myOptions
           })
         } else {
-          const text = 'category.' + category.code
           needOptions.push({
-            text: this.$t(text),
+            text: category.name,
             value: category.code
           })
         }

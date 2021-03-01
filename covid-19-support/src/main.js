@@ -8,10 +8,15 @@
 
 import Vue from 'vue'
 import VueScreen from 'vue-screen'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 import { BootstrapVue } from 'bootstrap-vue' // IconsPlugin
 import i18n from './i18n'
 
 import App from './App.vue'
+
+// import ProviderFactory from './api/apiProvider'
+// import { theme } from 'theme.config'
 
 import './ExtraMarkers/css/leaflet.extra-markers.min.css'
 import './ExtraMarkers/js/leaflet.extra-markers.min.js'
@@ -31,6 +36,9 @@ import './scss/main.scss'
 // Install Vue Screen
 Vue.use(VueScreen, 'bootstrap')
 
+// Http client
+Vue.use(VueAxios, axios)
+
 // Install BootstrapVue
 Vue.use(BootstrapVue)
 // Optionally install the BootstrapVue icon components plugin
@@ -45,5 +53,8 @@ new Vue({
     updateLang(iso) {
       i18n.locale = iso
     }
+  },
+  created() {
+    //ProviderFactory.setProvider(theme.data.provider, theme.data.url)
   }
 }).$mount('#app')

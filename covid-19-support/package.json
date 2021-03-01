@@ -20,11 +20,13 @@
   },
   "dependencies": {
     "@kazupon/vue-i18n-loader": "^0.5.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.13.0",
     "leaflet": "^1.7.1",
     "leaflet.markercluster": "^1.4.1",
     "vue": "^2.6.12",
+    "vue-axios": "^3.2.4",
     "vue-cli-plugin-i18n": "^1.0.1",
     "vue-i18n": "^8.22.4",
     "vue2-leaflet": "^2.6.0",
