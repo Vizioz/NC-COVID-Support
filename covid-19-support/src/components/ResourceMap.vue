@@ -45,10 +45,10 @@
           <!-- @clusterclick="click()" @ready="ready" -->
           <l-marker
             :lat-lng="latLng(item.marker.lat, item.marker.lng)"
-            :icon="selectedIcon(location.currentBusiness !== null && item.marker.id.$t === location.currentBusiness.marker.id.$t, item)"
+            :icon="selectedIcon(location.currentBusiness !== null && item.marker.id === location.currentBusiness.id, item)"
             v-for="(item, index) in filteredMarkers"
             v-bind:key="index"
-            @click="$emit('location-selected', { locValue: index, locId: item.marker.id.$t, isSetByMap: true })"
+            @click="$emit('location-selected', { locValue: index, locId: item.marker.id, isSetByMap: true })"
           ></l-marker>
         </v-marker-cluster>
         <l-control position="bottomright" class="user-location-button">

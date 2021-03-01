@@ -10,10 +10,10 @@ let entries = []
  * Get menu categories
  * @param {string} baseUrl
  */
-async function getMenuCategories() {
+async function getMenuSettings() {
   let categories = needCategories.categories
 
-  return categories
+  return { categories: categories }
 }
 
 /**
@@ -55,4 +55,4 @@ async function getResource(baseUrl) {
 /**
  * DataProviderConfig
  */
-export default new DataProviderConfig(getMenuCategories, fetchData, getByCategory, getResource)
+export default new DataProviderConfig(getMenuSettings, fetchData, getByCategory, getResource)

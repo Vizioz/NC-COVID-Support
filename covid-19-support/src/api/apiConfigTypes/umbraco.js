@@ -5,10 +5,10 @@ import { DataProviderConfig } from '../apiProvider'
  * Get menu categories
  * @param {string} baseUrl
  */
-async function getMenuCategories(baseUrl) {
+async function getMenuSettings(baseUrl) {
   let response = await Vue.$http.get(baseUrl + '/resource/settings')
 
-  return response.data.categories
+  return response.data
 }
 
 /**
@@ -41,12 +41,16 @@ async function getByCategory(categoryId, baseUrl) {
  * @param {string} baseUrl
  */
 async function getResource(id, baseUrl) {
+  if (!id || id === 0) {
+    return []
+  }
+
   let response = await Vue.$http.get(baseUrl + '/resource/Get/' + id)
 
-  return response
+  return response.data
 }
 
 /**
  * DataProviderConfig
  */
-export default new DataProviderConfig(getMenuCategories, fetchData, getByCategory, getResource)
+export default new DataProviderConfig(getMenuSettings, fetchData, getByCategory, getResource)

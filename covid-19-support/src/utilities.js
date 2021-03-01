@@ -1,5 +1,5 @@
 export function businessIcon(business) {
-  if (!business) {
+  if (!business || !business.icon) {
     return 'fa-circle fa-xs'
   }
 

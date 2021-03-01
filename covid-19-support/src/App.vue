@@ -240,8 +240,8 @@ export default {
       this.$root.updateLang(item.iso)
     },
     async fetchCategories() {
-      const categories = await this.$api.getMenuCategories()
-      this.neededCategories = categories
+      const menu = await this.$api.getMenuSettings()
+      this.neededCategories = menu.categories
     },
     async fetchData() {
       const entries = await this.$api.fetchData()
@@ -255,18 +255,20 @@ export default {
 
       this.locationData = { currentBusiness: null }
     },
-    locationSelected(val) {
-      val.currentBusiness = this.filteredMarkers[val.locValue]
+    async locationSelected(val) {
+      const resource = await this.$api.getResource(val.locId)
+      val.currentBusiness = resource
       this.locationData = val
       this.isFilterOpen = true
       this.showList = false
-      var proName = this.filteredMarkers[val.locValue].marker.gsx$provideraddloc.$t
-        ? ', ' + this.filteredMarkers[val.locValue].marker.gsx$provideraddloc.$t
+
+      var proName = this.filteredMarkers[val.locValue].marker.providerAddLoc
+        ? ', ' + this.filteredMarkers[val.locValue].marker.providerAddLoc
         : ''
 
       window.gtag('event', val.isSetByMap ? 'Marker clicked' : 'List item clicked', {
         event_category: 'View details - (' + this.language.name + ')',
-        event_label: this.filteredMarkers[val.locValue].marker.gsx$providername.$t + proName
+        event_label: this.filteredMarkers[val.locValue].marker.name + proName
       })
     },
     locationUnselected(isSetByMap) {

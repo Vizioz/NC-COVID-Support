@@ -15,13 +15,13 @@ async function getConfig(providerName) {
  * It contains the provider behaviour methods
  */
 export class DataProviderConfig {
-  getMenuCategories
+  getMenuSettings
   fetchData
   getByCategory
   getResource
 
-  constructor(getMenuCategories, fetchData, getByCategory, getResource) {
-    this.getMenuCategories = getMenuCategories
+  constructor(getMenuSettings, fetchData, getByCategory, getResource) {
+    this.getMenuSettings = getMenuSettings
     this.fetchData = fetchData
     this.getByCategory = getByCategory
     this.getResource = getResource
@@ -51,9 +51,9 @@ export class DataProvider {
     return this.#baseUrl
   }
 
-  getMenuCategories() {
-    if (this.#config && this.#config.getMenuCategories) {
-      return this.#config.getMenuCategories(this.#baseUrl)
+  getMenuSettings() {
+    if (this.#config && this.#config.getMenuSettings) {
+      return this.#config.getMenuSettings(this.#baseUrl)
     } else {
       return []
     }

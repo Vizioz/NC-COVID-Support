@@ -12,18 +12,20 @@
           <div @click.stop="toggleExpand">
             <div class="mobile-expand"></div>
             <div class="title">
-              <i :class="businessIcon(business.marker)"></i>
+              <i :class="businessIcon(business)"></i>
               <div class="busName">
-                <h5>{{ business.marker.gsx$providername.$t }}</h5>
-                <span v-if="!!business.marker.gsx$provideraddloc.$t">{{ business.marker.gsx$provideraddloc.$t }}</span>
-                <template v-if="!!business.marker.gsx$cuisine.$t">{{ business.marker.gsx$cuisine.$t }}</template>
+                <h5>{{ business.name }}</h5>
+                <span v-if="!!business.providerAddLoc">{{ business.providerAddLoc }}</span>
+                <template v-if="!!business.classificationType">{{ business.classificationType }}</template>
               </div>
             </div>
           </div>
+          <template v-if="business.description">
+            <p>{{ business.description }}</p>
+          </template>
           <div v-if="!snippet && getAddress(business.marker) !== ''">
             <b>{{ $t('label.address') }}:</b><br />
-            {{ getAddress(business.marker) }}<br />
-
+            {{ getAddress(business) }}<br />
             <span class="list-item" @click.stop="getDirections">
               <icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" />
             </span>
@@ -38,122 +40,59 @@
               />
               <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business.marker)" />
             </p>
+          
+            <span @click.stop="getDirections()"><icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" /></span>
+            <icon-list-item v-if="directionsBool" class="directionsOptions">
+              <icon-list-item icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
+              <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
+              <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
+            </icon-list-item>
           </div>
-          <p class="business-options" v-if="!snippet">
+          <p>
             <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$discountmedical != undefined && business.marker.gsx$discountmedical.$t == 1"
-              icon="fa-user-md"
-              :title="$tc('label.discountmedical', 1)"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$familymeal.$t == 1"
-              icon="fa-user-friends"
-              :title="$tc('category.family', 2)"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$mealstudent.$t == 1"
-              icon="fa-school"
-              :title="$tc('label.mealstudent', 1)"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$mealpublic.$t == 1"
-              icon="fa-users"
-              :title="$tc('label.mealpublic', 1)"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$freeproduce.$t == 1"
-              icon="fa-apple-alt"
-              :title="$tc('label.freeproduce', 1)"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$freegroceries != undefined && business.marker.gsx$freegroceries.$t == 1"
-              icon="fa-shopping-basket"
-              :title="$tc('label.freegroceries', 1)"
-            />
-            <icon-list-item class="list-item" v-if="business.marker.gsx$curbside.$t == 1" icon="fa-car" :title="$tc('label.curbside', 1)" />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$drivethru.$t == 1"
-              icon="fa-car-side"
-              :title="$t('label.drivethru')"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$orderonline.$t == 1"
-              icon="fa-mouse"
-              :title="$t('label.orderonline')"
-            />
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$delivery.$t == 1"
-              icon="fa-shipping-fast"
-              :title="$t('label.delivery')"
+              v-for="(opt, index) in business.options"
+              v-bind:key="index"
+              :icon="getOptionIcon(opt)"
+              :title="$tc('label.' + opt)"
             />
           </p>
 
-          <p v-if="!snippet" class="business-actions">
+          <p>
+            <icon-list-item v-if="business.contact" icon="fa-phone-alt" :title="business.contact" :link="'tel:' + business.contact" />
+
             <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$contact !== undefined && !!business.marker.gsx$contact.$t"
+              v-if="business.contactspanish"
               icon="fa-phone-alt"
-              :title="business.marker.gsx$contact.$t"
-              :link="'tel:' + business.marker.gsx$contact.$t"
+              :title="business.contactspanish + ' (' + $t('languages.es').toLowerCase() + ')'"
+              :link="'tel:' + business.contactspanish"
             />
 
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$contactspanish !== undefined && !!business.marker.gsx$contactspanish.$t"
-              icon="fa-phone-alt"
-              :title="business.marker.gsx$contactspanish.$t + ' (' + $t('languages.es').toLowerCase() + ')'"
-              :link="'tel:' + business.marker.gsx$contactspanish.$t"
-            />
+            <icon-list-item v-if="business.weblink" icon="fa-globe" :title="getDomain(business.weblink)" :link="business.weblink" />
 
             <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$weblink !== undefined && !!business.marker.gsx$weblink.$t"
-              icon="fa-globe"
-              :title="getDomain(business.marker.gsx$weblink.$t)"
-              :link="business.marker.gsx$weblink.$t"
-            />
-
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$twitter !== undefined && !!business.marker.gsx$twitter.$t"
+              v-if="business.twitter"
               icon="fa fa-twitter"
-              :title="'@' + business.marker.gsx$twitter.$t"
-              :link="'https://www.twitter.com/' + business.marker.gsx$twitter.$t"
+              :title="'@' + business.twitter"
+              :link="'https://www.twitter.com/' + business.twitter"
             />
 
             <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$instagram !== undefined && !!business.marker.gsx$instagram.$t"
+              v-if="business.instagram"
               icon="fa fa-instagram"
-              :title="'@' + business.marker.gsx$instagram.$t"
-              :link="'https://www.instagram.com/' + business.marker.gsx$instagram.$t"
+              :title="'@' + business.instagram"
+              :link="'https://www.instagram.com/' + business.instagram"
             />
 
-            <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$facebook !== undefined && !!business.marker.gsx$facebook.$t"
-              icon="fa fa-facebook-square"
-              :title="'Facebook'"
-              :link="business.marker.gsx$facebook.$t"
-            />
+            <icon-list-item v-if="business.facebook" icon="fa fa-facebook-square" :title="'Facebook'" :link="business.facebook" />
 
             <icon-list-item
-              class="list-item"
-              v-if="business.marker.gsx$email !== undefined && !!business.marker.gsx$email.$t"
+              v-if="business.email"
               icon="fa-envelope"
-              :title="getDomain(business.marker.gsx$email.$t)"
-              :link="'mailto:' + business.marker.gsx$email.$t"
+              :title="getDomain(business.email)"
+              :link="'mailto:' + business.email"
             />
           </p>
+<<<<<<< HEAD
           <p v-if="snippet" class="business-actions">
             <span class="list-item" @click.stop="getDirections">
               <icon-list-item
@@ -186,40 +125,46 @@
             <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business.marker)" />
             <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business.marker)" />
           </p>
+=======
+>>>>>>> f13af63... merge conflicts
 
-          <opening-hours v-if="!snippet" :business="business.marker" :title="$t('label.openinghours')"></opening-hours>
-          <opening-hours v-if="!snippet" :business="business.marker" :title="$t('label.seniorhours')" :senior="true"></opening-hours>
+          <opening-hours :openHours="business.openHours" :title="$t('label.openinghours')" :description="business.status"></opening-hours>
+          <opening-hours
+            :openHours="Array.isArray(business.specialHours) ? business.specialHours : []"
+            :title="$t('label.seniorhours')"
+            :description="Array.isArray(business.specialHours) ? '' : business.specialHours"
+          ></opening-hours>
+          <opening-hours :title="$t('label.holidayhours')" :description="business.holidaysHours"></opening-hours>
 
-          <div v-if="!snippet">
-            <template v-if="business.marker.gsx$instructions !== undefined && !!business.marker.gsx$instructions.$t">
-              <p>
-                <b>{{ $t('label.instructions') }}:</b><br />{{ business.marker.gsx$instructions.$t }}
-              </p>
-            </template>
-            <template v-if="business.marker.gsx$offers !== undefined && !!business.marker.gsx$offers.$t">
-              <p>
-                <b>{{ $t('label.offers') }}:</b><br />{{ business.marker.gsx$offers.$t }}
-              </p>
-            </template>
-            <template v-if="business.marker.gsx$notes !== undefined && !!business.marker.gsx$notes.$t">
-              <p>
-                <b>{{ $t('label.notes') }}:</b><br />{{ business.marker.gsx$notes.$t }}
-              </p>
-            </template>
-            <p class="updated" v-if="getLastUpdatedDate != 'Invalid Date'">
-              {{ $t('label.details-last-updated') }}: {{ getLastUpdatedDate }}
+          <template v-if="business.instructions">
+            <p>
+              <b>{{ $t('label.instructions') }}:</b><br />{{ business.instructions }}
             </p>
-          </div>
+          </template>
+          <template v-if="business.offers !== undefined && !!business.offers">
+            <p>
+              <b>{{ $t('label.offers') }}:</b><br />{{ business.offers }}
+            </p>
+          </template>
+          <template v-if="business.notes">
+            <p>
+              <b>{{ $t('label.notes') }}:</b><br />{{ business.notes }}
+            </p>
+          </template>
+
+          <p class="updated" v-if="getLastUpdatedDate != 'Invalid Date'">
+            {{ $t('label.details-last-updated') }}: {{ getLastUpdatedDate }}
+          </p>
         </div>
       </b-list-group-item>
     </b-list-group>
-  </div>
+  </span>
 </template>
 
 <script>
 import OpeningHours from './OpeningHours.vue'
 import IconListItem from './IconListItem.vue'
-import { businessIcon, getAddress } from '../utilities'
+import { businessIcon, optionIcon, getAddress } from '../utilities'
 export default {
   name: 'BusinessDetails',
   components: {
@@ -242,22 +187,25 @@ export default {
       var urlParts = url.replace('http://', '').replace('https://', '').replace('www.', '').split(/[/?#]/)
       return urlParts[0]
     },
-    addressUrl(marker) {
-      var address = marker.gsx$address.$t
+    addressUrl(business) {
+      var address = business.address
       address = address.replace(/\s/g, '%20')
-      var city = marker.gsx$city.$t.replace(/\s/g, '%20')
-      var state = marker.gsx$state.$t.replace(/\s/g, '%20')
-      address = address + '%2C%20' + city + '%2C%20' + state + '%20' + marker.gsx$zip.$t
+      var city = business.city.replace(/\s/g, '%20')
+      var state = business.state.replace(/\s/g, '%20')
+      address = address + '%2C%20' + city + '%2C%20' + state + '%20' + business.zip
       return address
     },
-    appleDirectionsLink(marker) {
-      return 'http://maps.apple.com/?q=' + marker.gsx$address.$t + '&ll=' + marker.gsx$lat.$t + '%2C' + marker.gsx$lon.$t
+    appleDirectionsLink(business) {
+      return 'http://maps.apple.com/?q=' + business.address + '&ll=' + business.lat + '%2C' + business.lng
     },
-    googleDirectionsLink(marker) {
-      return 'https://www.google.com/maps/dir/?api=1&destination=' + this.addressUrl(marker)
+    businessIcon(business) {
+      return 'fa ' + businessIcon(business)
     },
-    wazeDirectionsLink(marker) {
-      return 'https://www.waze.com/ul?ll=' + marker.gsx$lat.$t + '%2C' + marker.gsx$lon.$t + '&navigate=yes'
+    googleDirectionsLink(business) {
+      return 'https://www.google.com/maps/dir/?api=1&destination=' + this.addressUrl(business)
+    },
+    wazeDirectionsLink(business) {
+      return 'https://www.waze.com/ul?ll=' + business.lat + '%2C' + business.lng + '&navigate=yes'
     },
     getDirections() {
       this.directionsBool = !this.directionsBool
@@ -271,12 +219,14 @@ export default {
     toggleExpand() {
       this.$emit('toggle-expanding-details')
     },
-    businessIcon: businessIcon,
+    optionIcon(opt) {
+      return 'fas ' + optionIcon(opt)
+    },
     getAddress: getAddress
   },
   computed: {
     getLastUpdatedDate() {
-      return new Date(Date.parse(this.business.marker.gsx$lastupdate.$t)).toLocaleDateString()
+      return new Date(Date.parse(this.business.lastUpdate)).toLocaleDateString()
     },
     iOS() {
       return /iPad|iPhone|iPod|Mac OS/.test(navigator.userAgent)

@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { dayFilters, seniorDayFilters, weekdayHours } from '../constants'
 export default {
   name: 'OpeningHours',
   data() {
@@ -24,67 +23,62 @@ export default {
     title: { type: String },
     infotype: { type: String },
     icon: { type: String },
-    senior: { type: Boolean },
-    business: { type: Object },
-    day: { type: String }
+    openHours: { type: Array },
+    description: { type: String }
   },
   computed: {
     days() {
       var myDays = []
-      var cnt = 0
 
-      if (this.senior) {
-        seniorDayFilters.forEach((attr, index) => {
-          var dayName = this.$t(`dayofweek.${weekdayHours[index].day}`)
-          switch (this.business[attr].$t.length) {
-            case 0:
-              // myDays.push({ name: dayName, val: this.$t('label.normalhours') })
-              // cnt++
-              break
-            case 1:
-              // if (this.business[attr].$t == '0') {
-              //   myDays.push({ name: dayName, val: this.$t('label.closed') })
-              // } else {
-              //   // myDays.push({ name: dayName, val: this.$t('label.normalhours') })
-              //   // cnt++
-              // }
-              break
-            default:
-              myDays.push({ name: dayName, val: this.business[attr].$t.replace(',', '<br/>') })
-              cnt++
-              break
-          }
-        })
-      } else {
-        dayFilters.forEach((attr, index) => {
-          var dayName = this.$t(`dayofweek.${weekdayHours[index].day}`)
-          switch (this.business[attr].$t.length) {
-            case 0:
-              // myDays.push({ name: dayName, val: this.$t('label.normalhours') })
-              // cnt++
-              break
-            case 1:
-              if (this.business[attr].$t == 0) {
-                myDays.push({ name: dayName, val: this.$t('label.closed'), class: 'closed' })
-              } else {
-                // myDays.push({ name: dayName, val: this.$t('label.normalhours') })
-                // cnt++
-              }
-              cnt++
-              break
-            default:
-              myDays.push({ name: dayName, val: this.business[attr].$t.replace(',', '<br/>') })
-              cnt++
-              break
-          }
-        })
+      if (!this.openHours) {
+        return myDays
       }
 
-      if (cnt == 0) {
-        return myDays.push({ name: this.$t('label.allweek'), val: this.$t('label.closed') })
-      }
+      this.openHours.forEach((openHour) => {
+        let dayName = openHour.day
+        let hours = []
+        openHour.hours.forEach((hour) => {
+          hours.push(this.getHoursVal(hour))
+        })
+
+        myDays.push({ name: dayName, val: hours.join('</br>') })
+      })
 
       return myDays
+    }
+  },
+  methods: {
+    getHoursVal(val) {
+      return this.getHoursRangeVal(val.startTime) + ' - ' + this.getHoursRangeVal(val.endTime)
+    },
+    getHoursRangeVal(val) {
+      if (!val) {
+        return ''
+      }
+
+      let hours = parseInt(val.split(':')[0])
+      let minutes = parseInt(val.split(':')[1])
+      let t
+
+      if (isNaN(hours)) {
+        return ''
+      }
+
+      if (hours === 0) {
+        hours = 12
+        t = 'AM'
+      } else if (hours > 0 && hours < 12) {
+        t = 'AM'
+      } else if (hours === 12) {
+        t = 'PM'
+      } else {
+        hours = hours - 12
+        t = 'PM'
+      }
+
+      minutes = !isNaN(minutes) && minutes > 0 ? ':' + minutes : ''
+
+      return hours + minutes + ' ' + t
     }
   }
 }
