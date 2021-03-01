@@ -83,6 +83,7 @@ export default {
     highlightFilteredMarkers: Array,
     location: { locValue: Number, locId: String, isSetByMap: Boolean, currentBusiness: Object },
     showList: Boolean,
+    isListOnly: Boolean,
     warning: String,
     neededCategories: Array
   },
@@ -186,6 +187,12 @@ export default {
     }
   },
   watch: {
+    isListOnly(val) {
+      if (val === true) {
+        this.showListsVal = true
+        this.showExpandedDetails = !this.showExpandedDetails
+      }
+    },
     showList(val) {
       this.showListsVal = val
     },

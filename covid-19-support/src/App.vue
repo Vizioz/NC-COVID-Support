@@ -19,6 +19,7 @@
         :highlightFilteredMarkers="highlightFilteredMarkers"
         :location="locationData"
         :show-list="showList"
+        :isListOnly="isListOnly"
         :warning="warning"
         :neededCategories="neededCategories"
         @location-selected="locationSelected"
@@ -134,6 +135,7 @@ export default {
       language: { name: 'English', iso: 'en' },
       locationData: { locValue: null, locId: null, currentBusiness: null, isSetByMap: false },
       showList: false,
+      isListOnly: false,
       highlightFilters: [],
       bounds: null,
       centroid: {
@@ -237,6 +239,7 @@ export default {
         t.markers = retList
         t.need = val
         t.showList = val !== 0
+        t.isListOnly = response.showListOnly
         t.highlightFilters = []
         t.locationData.currentBusiness = null
         t.warningMobile = null
