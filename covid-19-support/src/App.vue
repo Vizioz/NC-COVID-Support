@@ -39,7 +39,6 @@
 
         <resource-map
           :filteredMarkers="filteredMarkers"
-          :markers="markers"
           :class="{ noselection: need == 'none' }"
           :location="locationData"
           :attribution="attribution"
@@ -67,7 +66,8 @@ import MobileSearchFilters from './components/MobileSearchFilters'
 import { latLng } from 'leaflet'
 import { haversineDistance, sortByDistance } from './utilities'
 
-import { dayFilters, booleanFilters, dayAny } from './constants'
+//import { dayFilters, booleanFilters, dayAny } from './constants'
+import { booleanFilters, dayAny } from './constants'
 
 import { theme } from 'theme.config'
 import ThemeHeader from 'theme.header'
@@ -205,12 +205,34 @@ export default {
     needSelected(val) {
       let t = this
       this.$api.fetchByCategory(val).then(function (response) {
-        t.markers = response
+        var markers = response
+
+        // TODO: redo open-closed
+        // var today = new Date().getDay()
+        // var selectedDay = today
+        // if (!t.isAnyDaySelected(t.day)) {
+        //   selectedDay = t.day
+        // }
+        // const dayFilter = dayFilters[t.getDay(selectedDay)]
+        // console.log(dayFilter)
+        // console.log(markers)
+        // var open = markers.filter((c) => c[dayFilter].$t !== '0')
+        // var closed = markers.filter((c) => c[dayFilter].$t == '0')
+
+        var retList = extend(
+          markers.map((marker) => ({
+            marker,
+            oc: true, // TODO: open-closed
+            distance: haversineDistance([t.centroid.lat, t.centroid.lng], [marker.lat, marker.lng], true)
+          }))
+        ).sort(sortByDistance)
+
+        t.markers = retList
+        t.need = val
+        t.showList = val !== 0
+        t.highlightFilters = []
       })
-      this.need = val
-      this.showList = this.need !== 0
-      this.highlightFilters = []
-      this.warningMobile = null
+
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
     },
     changeLanguage(item) {
@@ -255,15 +277,9 @@ export default {
   },
   computed: {
     filteredMarkers() {
-      if (this.entries == null) return null
+      if (this.markers == null) return null
 
-      var markers
-
-      if (this.need == 'family') {
-        markers = this.entries.filter((c) => c.gsx$familymeal.$t == 1 && c.gsx$status.$t == '1')
-      } else {
-        markers = this.entries.filter((c) => c.gsx$resource.$t === this.need && c.gsx$status.$t == '1')
-      }
+      var markers = this.markers
 
       // Filter out the boolean items
       this.highlightFilters.forEach((element) => {
@@ -272,35 +288,12 @@ export default {
         }
       })
 
-      var today = new Date().getDay()
-      var selectedDay = today
-      if (!this.isAnyDaySelected(this.day)) {
-        selectedDay = this.day
-      }
-
-      const dayFilter = dayFilters[this.getDay(selectedDay)]
-      var open = markers.filter((c) => c[dayFilter].$t !== '0')
-      var closed = markers.filter((c) => c[dayFilter].$t == '0')
-
-      var retList = extend(
-        open.map((marker) => ({
-          marker,
-          oc: true,
-          distance: haversineDistance([this.centroid.lat, this.centroid.lng], [marker.gsx$lat.$t, marker.gsx$lon.$t], true)
-        })),
-        closed.map((marker) => ({
-          marker,
-          oc: false,
-          distance: haversineDistance([this.centroid.lat, this.centroid.lng], [marker.gsx$lat.$t, marker.gsx$lon.$t], true)
-        }))
-      ).sort(sortByDistance)
-
-      return retList
+      return markers
     },
     highlightFilteredMarkers() {
       var contained = [] //makers in map boundingbox
-      this.filteredMarkers.forEach((m) => {
-        if (this.bounds.contains(latLng(m.marker.gsx$lat.$t, m.marker.gsx$lon.$t))) contained.push(m)
+      this.markers.forEach((m) => {
+        if (this.bounds.contains(latLng(m.marker.lat, m.marker.lng))) contained.push(m)
       })
 
       if (!this.isAnyDaySelected(this.day)) {

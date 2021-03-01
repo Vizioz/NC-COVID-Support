@@ -44,8 +44,9 @@
         <v-marker-cluster ref="marks" :options="clusterOptions">
           <!-- @clusterclick="click()" @ready="ready" -->
           <l-marker
-            :lat-lng="latLng(item.lat, item.lon)"
-            v-for="(item, index) in markers"
+            :lat-lng="latLng(item.marker.lat, item.marker.lng)"
+            :icon="selectedIcon(location.currentBusiness !== null && item.marker.id.$t === location.currentBusiness.marker.id.$t, item)"
+            v-for="(item, index) in filteredMarkers"
             v-bind:key="index"
             @click="$emit('location-selected', { locValue: index, locId: item.marker.id.$t, isSetByMap: true })"
           ></l-marker>
@@ -101,7 +102,6 @@ export default {
   },
   props: {
     filteredMarkers: Array,
-    markers: Array,
     location: { locValue: Number, currentBusiness: Object, isSetByMap: Boolean },
     mapUrl: String,
     attribution: String,
@@ -236,7 +236,7 @@ export default {
       }
       var markerIcon = ExtraMarkers.icon({
         className: markerColor,
-        icon: iconClasses,
+        icon: iconClasses, //'fa-circle fa-xs',
         prefix: 'fa',
         svg: true
         // ,
@@ -563,6 +563,13 @@ div.markeropen svg path {
     font-family: Geneva, sans-serif;
     padding-right: 10px;
     margin-left: 8px;
+  }
+}
+
+.leaflet-marker-icon {
+  i.fa-xs {
+    font-size: 0.75em !important;
+    top: 0.25em !important;
   }
 }
 </style>
