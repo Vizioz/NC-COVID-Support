@@ -10,11 +10,66 @@ export function businessIcon(business) {
   return 'fa-circle fa-xs'
 }
 
+export function optionIcon(option) {
+  switch (option) {
+    case 'acceptsmedicaid':
+      return 'fa-notes-medical'
+    case 'acceptsmedicare':
+      return 'fa-notes-medical'
+    case 'acceptsuninsuredPatients':
+      return 'fa-hand-holding-medical'
+    case 'curbside':
+      return 'fa-car'
+    case 'delivery':
+      return 'fa-shipping-fast'
+    case 'discountmedical':
+      return 'fa-user-md'
+    case 'drivethru':
+      return 'fa-car-side'
+    case 'familymeal':
+      return 'fa-user-friends'
+    case 'farmersmarket':
+      return 'fa-store'
+    case 'farmpick-up':
+      return 'fa-truck-pickup'
+    case 'free':
+      return 'fa-heart'
+    case 'freegroceries':
+      return 'fa-shopping-basket'
+    case 'freeproduce':
+      return 'fa-apple-alt'
+    case 'instore':
+      return 'fa-store'
+    case 'instorepickup':
+      return 'fa-store-alt'
+    case 'local':
+      return 'fa-map-marker-alt'
+    case 'lowcost':
+      return 'fa-dollar-sign'
+    case 'mealpublic':
+      return 'fa-users'
+    case 'mealstudent':
+      return 'fa-school'
+    case 'mustpreorder':
+      return 'fa-phone'
+    case 'orderonline':
+      return 'fa-mouse'
+    case 'payonline':
+      return 'fa-credit-card'
+    case 'safeforundocumentedindividuals':
+      return 'fa-address-card'
+    case 'specialhours':
+      return 'fa-history'
+    default:
+      return 'fa-users'
+  }
+}
+
 export function getAddress(marker) {
-  var address = marker.gsx$address !== undefined && marker.gsx$address.$t !== '' ? marker.gsx$address.$t + ', ' : ''
-  address = address + (marker.gsx$city !== undefined && marker.gsx$city.$t !== '' ? marker.gsx$city.$t + ', ' : '')
-  address = address + (marker.gsx$state !== undefined && marker.gsx$state.$t !== '' ? marker.gsx$state.$t + ' ' : '')
-  return address + (marker.gsx$zip !== undefined && marker.gsx$zip.$t !== '' ? marker.gsx$zip.$t : '')
+  var address = marker.address ? marker.address + ', ' : ''
+  address = address + (marker.city ? marker.city + ', ' : '')
+  address = address + (marker.state ? marker.state + ' ' : '')
+  return address + (marker.zip ? marker.zip : '')
 }
 
 // See: https://stackoverflow.com/questions/14560999/using-the-haversine-formula-in-javascript

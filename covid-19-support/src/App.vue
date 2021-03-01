@@ -34,6 +34,7 @@
           :class="{ toggled: isFilterOpen }"
           :filteredMarkers="highlightFilteredMarkers"
           :highlightFilters="highlightFilters"
+          :filterOptions="filterOptions"
           @box-selected="boxSelected"
         />
 
@@ -67,7 +68,7 @@ import { latLng } from 'leaflet'
 import { haversineDistance, sortByDistance } from './utilities'
 
 //import { dayFilters, booleanFilters, dayAny } from './constants'
-import { booleanFilters, dayAny } from './constants'
+import { dayAny } from './constants'
 
 import { theme } from 'theme.config'
 import ThemeHeader from 'theme.header'
@@ -202,35 +203,40 @@ export default {
     isAnyDaySelected(day) {
       return day >= dayAny
     },
+    isOpen(marker) {
+      // TODO: redo open-closed
+      // var today = new Date().getDay()
+      // var selectedDay = today
+      // if (!t.isAnyDaySelected(t.day)) {
+      //   selectedDay = t.day
+      // }
+      // const dayFilter = dayFilters[t.getDay(selectedDay)]
+      // var open = markers.filter((c) => c[dayFilter].$t !== '0')
+      // var closed = markers.filter((c) => c[dayFilter].$t == '0')
+
+      return marker.isOpen
+    },
     needSelected(val) {
       let t = this
       this.$api.fetchByCategory(val).then(function (response) {
-        var markers = response
-
-        // TODO: redo open-closed
-        // var today = new Date().getDay()
-        // var selectedDay = today
-        // if (!t.isAnyDaySelected(t.day)) {
-        //   selectedDay = t.day
-        // }
-        // const dayFilter = dayFilters[t.getDay(selectedDay)]
-        // console.log(dayFilter)
-        // console.log(markers)
-        // var open = markers.filter((c) => c[dayFilter].$t !== '0')
-        // var closed = markers.filter((c) => c[dayFilter].$t == '0')
+        var markers = response.markers
+        var filters = response.highlightFilters
 
         var retList = extend(
           markers.map((marker) => ({
             marker,
-            oc: true, // TODO: open-closed
+            oc: t.isOpen(marker),
             distance: haversineDistance([t.centroid.lat, t.centroid.lng], [marker.lat, marker.lng], true)
           }))
         ).sort(sortByDistance)
 
+        t.filterOptions = filters.split(',')
         t.markers = retList
         t.need = val
         t.showList = val !== 0
         t.highlightFilters = []
+        t.locationData.currentBusiness = null
+        console.log(t.markers)
       })
 
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
@@ -279,22 +285,20 @@ export default {
   },
   computed: {
     filteredMarkers() {
-      if (this.markers == null) return null
+      if (!this.markers) return null
 
       var markers = this.markers
 
       // Filter out the boolean items
       this.highlightFilters.forEach((element) => {
-        if (booleanFilters.includes(element)) {
-          markers = markers.filter((c) => c['gsx$' + element].$t == '1')
-        }
+        markers = markers.filter((c) => c.marker.options.includes(element))
       })
 
       return markers
     },
     highlightFilteredMarkers() {
       var contained = [] //makers in map boundingbox
-      this.markers.forEach((m) => {
+      this.filteredMarkers.forEach((m) => {
         if (this.bounds.contains(latLng(m.marker.lat, m.marker.lng))) contained.push(m)
       })
 

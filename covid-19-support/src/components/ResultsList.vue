@@ -9,7 +9,7 @@
         class="resultItem"
         :class="{ selected: index == location.locValue, closedOne: item.oc == false }"
         :ref="'result' + index"
-        @click="$emit('location-selected', { locValue: index, isSetByMap: false })"
+        @click="$emit('location-selected', { locValue: index, locId: item.marker.id, isSetByMap: false })"
       >
         <h5 class="resultTitle">{{ item.marker.name }}</h5>
         <template v-if="!!item.marker.providerAddLoc">
@@ -21,30 +21,11 @@
           {{ item.marker.address }}{{ item.marker.addresss !== '' ? ',' : '' }}
           {{ item.marker.city }}
         </span>
-        <template v-if="hasOption(item, 'discountMedical')"
-          ><span :title="$tc('label.discountmedical', 1)"><i class="fas fa-user-md" /></span
-        ></template>
-        <template v-if="hasOption(item, 'familyMeal')"
-          ><span :title="$tc('category.family', 2)"><i class="fas fa-user-friends" /></span
-        ></template>
-        <template v-if="item.marker.options.includes('mealStudent')"
-          ><span :title="$tc('label.mealstudent', 1)"><i class="fas fa-school" /></span
-        ></template>
-        <template v-if="item.marker.options.includes('mealPublic')"
-          ><span :title="$tc('label.mealpublic', 1)"><i class="fas fa-users" /></span
-        ></template>
-        <template v-if="item.marker.options.includes('driveThru')"
-          ><span :title="$t('label.drivethru')"><i class="fas fa-car-side" /></span
-        ></template>
-        <template v-if="item.marker.options.includes('curbside')"
-          ><span :title="$tc('label.curbside', 1)"><i class="fas fa-car" /></span
-        ></template>
-        <template v-if="item.marker.options.includes('orderOnline')"
-          ><span :title="$t('label.orderonline')"><i class="fas fa-mouse" /></span
-        ></template>
-        <template v-if="item.marker.options.includes('delivery')"
-          ><span :title="$t('label.delivery')"><i class="fas fa-shipping-fast" /></span
-        ></template>
+        <template v-for="(opt, index) in item.marker.options">
+          <span v-bind:key="index" :title="$tc('label.' + opt.toLowerCase(), 1)">
+            <i :class="getClassIcon(opt)" />
+          </span>
+        </template>
       </b-list-group-item>
     </b-list-group>
   </div>
@@ -52,6 +33,8 @@
 
 <script>
 import { weekdaysJs } from '../constants'
+
+import { optionIcon } from '../utilities'
 
 export default {
   name: 'ResultsList',
@@ -83,8 +66,8 @@ export default {
 
       return `${this.$t('label.closed-on')} ${this.$t(`dayofweek.${weekdaysJs[this.selectedDay].day}`)}`
     },
-    hasOption(item, option) {
-      return item.marker.options.includes(option)
+    getClassIcon(option) {
+      return 'fas ' + optionIcon(option)
     }
   }
 }

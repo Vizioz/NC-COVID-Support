@@ -40,7 +40,6 @@
               />
               <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business.marker)" />
             </p>
-          
             <span @click.stop="getDirections()"><icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" /></span>
             <icon-list-item v-if="directionsBool" class="directionsOptions">
               <icon-list-item icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
@@ -92,7 +91,6 @@
               :link="'mailto:' + business.email"
             />
           </p>
-<<<<<<< HEAD
           <p v-if="snippet" class="business-actions">
             <span class="list-item" @click.stop="getDirections">
               <icon-list-item
@@ -125,8 +123,6 @@
             <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business.marker)" />
             <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business.marker)" />
           </p>
-=======
->>>>>>> f13af63... merge conflicts
 
           <opening-hours :openHours="business.openHours" :title="$t('label.openinghours')" :description="business.status"></opening-hours>
           <opening-hours
@@ -158,7 +154,7 @@
         </div>
       </b-list-group-item>
     </b-list-group>
-  </span>
+  </div>
 </template>
 
 <script>

@@ -38,7 +38,7 @@ export default {
         let dayName = openHour.day
         let hours = []
         openHour.hours.forEach((hour) => {
-          hours.push(this.getHoursVal(hour))
+          hours.push(this.getHoursRangeVal(hour))
         })
 
         myDays.push({ name: dayName, val: hours.join('</br>') })
@@ -48,10 +48,10 @@ export default {
     }
   },
   methods: {
-    getHoursVal(val) {
-      return this.getHoursRangeVal(val.startTime) + ' - ' + this.getHoursRangeVal(val.endTime)
-    },
     getHoursRangeVal(val) {
+      return (val.title ? val.title + ' ' : '') + this.getHoursVal(val.startTime) + ' - ' + this.getHoursVal(val.endTime)
+    },
+    getHoursVal(val) {
       if (!val) {
         return ''
       }
