@@ -13,7 +13,7 @@
 import SearchFilters from './SearchFilters'
 export default {
   props: {
-    need: String,
+    need: Number,
     warning: String,
     neededCategories: Array
   },

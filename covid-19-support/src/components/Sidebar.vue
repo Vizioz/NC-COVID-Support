@@ -73,7 +73,7 @@ export default {
   },
   props: {
     isFilterOpen: Boolean,
-    need: String,
+    need: Number,
     filteredMarkers: Array,
     highlightFilteredMarkers: Array,
     location: { locValue: Number, locId: String, isSetByMap: Boolean, currentBusiness: Object },

@@ -16,12 +16,12 @@ export default {
     }
   },
   props: {
-    need: String,
+    need: Number,
     neededCategories: Array
   },
   computed: {
     needOptionGroups() {
-      const needOptions = [{ value: 'none', text: this.$tc('label.selectacategory', 1) }]
+      const needOptions = [{ value: 0, text: this.$tc('label.selectacategory', 1) }]
 
       if (!this.neededCategories) {
         return needOptions
@@ -29,37 +29,26 @@ export default {
 
       this.neededCategories.forEach((category) => {
         if (category.subcategories != undefined) {
-          const label = category.name
           const myOptions = []
           category.subcategories.forEach((subcategory) => {
             myOptions.push({
-              text: subcategory.name,
-              value: subcategory.code
+              text: subcategory.code ? this.$tc('category.' + subcategory.code) : subcategory.name,
+              value: subcategory.id
             })
           })
           needOptions.push({
-            label: label,
+            label: category.code ? this.$tc('category.' + category.code) : category.name,
             options: myOptions
           })
         } else {
           needOptions.push({
-            text: category.name,
-            value: category.code
+            text: category.code ? this.$tc('category.' + category.code) : category.name,
+            value: category.id
           })
         }
       })
+
       return needOptions
-    },
-    needOptions() {
-      return [
-        { value: 'selectacategory', text: this.$tc('label.selectacategory', 1) },
-        { value: 'meal', text: this.$tc('category.meal', 2) },
-        { value: 'family', text: this.$tc('category.family', 2) },
-        { value: 'grocery', text: this.$tc('category.grocery', 2) },
-        { value: 'pharmacy', text: this.$tc('category.pharmacy', 1) },
-        { value: 'food_bev', text: this.$tc('category.food_bev', 2) },
-        { value: 'pet', text: this.$t('category.pet') }
-      ]
     }
   }
 }

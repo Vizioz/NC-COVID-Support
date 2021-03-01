@@ -30,7 +30,7 @@ export default {
     ValueBox
   },
   props: {
-    need: String,
+    need: Number,
     filteredMarkers: Array,
     highlightFilters: Array
   },

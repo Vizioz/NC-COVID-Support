@@ -1,11 +1,19 @@
-//import Vue from 'vue'
-
+/**
+ * Get Config
+ * Imports the DataProviderConfig file from the available types by name
+ * and returns the new object
+ * @param {string} providerName
+ */
 async function getConfig(providerName) {
   return import('./apiConfigTypes/' + providerName).then(function (response) {
     return response.default
   })
 }
 
+/**
+ * The DataProviderConfig class
+ * It contains the provider behaviour methods
+ */
 export class DataProviderConfig {
   getMenuCategories
   fetchData
@@ -20,6 +28,9 @@ export class DataProviderConfig {
   }
 }
 
+/**
+ * The DataProvider class.
+ */
 export class DataProvider {
   #providerName
   #baseUrl
@@ -56,9 +67,9 @@ export class DataProvider {
     }
   }
 
-  fegetByCategorytchData(category) {
+  fetchByCategory(category) {
     if (this.#config && this.#config.getByCategory) {
-      return this.#config.getByCategory(category)
+      return this.#config.getByCategory(category, this.#baseUrl)
     } else {
       return []
     }
@@ -66,18 +77,19 @@ export class DataProvider {
 
   getResource(id) {
     if (this.#config && this.#config.getResource) {
-      return this.#config.getResource(id)
+      return this.#config.getResource(id, this.#baseUrl)
     } else {
       return []
     }
   }
 }
 
+/**
+ * Exports the default method to build and get the api provider
+ */
 export default {
   apiProvider(provider, url) {
     return getConfig(provider).then(function (config) {
-      let a = new DataProvider(provider, url, config)
-      a.p
       return new DataProvider(provider, url, config)
     })
   }

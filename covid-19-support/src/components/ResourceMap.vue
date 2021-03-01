@@ -44,9 +44,8 @@
         <v-marker-cluster ref="marks" :options="clusterOptions">
           <!-- @clusterclick="click()" @ready="ready" -->
           <l-marker
-            :lat-lng="latLng(item.marker.gsx$lat.$t, item.marker.gsx$lon.$t)"
-            :icon="selectedIcon(location.currentBusiness !== null && item.marker.id.$t === location.currentBusiness.marker.id.$t, item)"
-            v-for="(item, index) in filteredMarkers"
+            :lat-lng="latLng(item.lat, item.lon)"
+            v-for="(item, index) in markers"
             v-bind:key="index"
             @click="$emit('location-selected', { locValue: index, locId: item.marker.id.$t, isSetByMap: true })"
           ></l-marker>
@@ -102,6 +101,7 @@ export default {
   },
   props: {
     filteredMarkers: Array,
+    markers: Array,
     location: { locValue: Number, currentBusiness: Object, isSetByMap: Boolean },
     mapUrl: String,
     attribution: String,

@@ -39,6 +39,7 @@
 
         <resource-map
           :filteredMarkers="filteredMarkers"
+          :markers="markers"
           :class="{ noselection: need == 'none' }"
           :location="locationData"
           :attribution="attribution"
@@ -126,7 +127,7 @@ export default {
     return {
       provider: null,
       entries: null,
-      need: 'none',
+      need: 0,
       day: dayAny,
       isFilterOpen: true,
       language: { name: 'English', iso: 'en' },
@@ -145,9 +146,11 @@ export default {
       mapUrl: '',
       attribution: null,
       socialMediaico: theme.socialMedia,
+      neededCategories: null,
+      markers: [],
+      filterOptions: [],
       warning: theme.warning,
-      warningMobile: theme.warning,
-      neededCategories: null
+      warningMobile: theme.warning
     }
   },
   mounted() {
@@ -200,8 +203,12 @@ export default {
       return day >= dayAny
     },
     needSelected(val) {
+      let t = this
+      this.$api.fetchByCategory(val).then(function (response) {
+        t.markers = response
+      })
       this.need = val
-      this.showList = this.need !== 'none'
+      this.showList = this.need !== 0
       this.highlightFilters = []
       this.warningMobile = null
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
