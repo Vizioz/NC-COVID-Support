@@ -23,14 +23,14 @@
           <template v-if="business.description">
             <p>{{ business.description }}</p>
           </template>
-          <div v-if="!snippet && getAddress(business.marker) !== ''">
+          <div v-if="!snippet && getAddress(business) !== ''">
             <b>{{ $t('label.address') }}:</b><br />
             {{ getAddress(business) }}<br />
             <span class="list-item" @click.stop="getDirections">
               <icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" />
             </span>
             <p id="directions-options-expanded" v-if="directionsBool" class="directions-options list-item">
-              <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business.marker)" />
+              <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
               <icon-list-item
                 class="list-item"
                 v-if="iOS"
@@ -38,14 +38,8 @@
                 title="Apple Maps"
                 :link="appleDirectionsLink(business.marker)"
               />
-              <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business.marker)" />
+              <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
             </p>
-            <span @click.stop="getDirections()"><icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" /></span>
-            <icon-list-item v-if="directionsBool" class="directionsOptions">
-              <icon-list-item icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
-              <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
-              <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
-            </icon-list-item>
           </div>
           <p>
             <icon-list-item

@@ -13,7 +13,12 @@
 
       <div>
         <div class="sidebar-top">
-          <search-filters class="search-filters" :need="need" @need-selected="(opt) => $emit('need-selected', opt)" />
+          <search-filters
+            class="search-filters"
+            :need="need"
+            :neededCategories="neededCategories"
+            @need-selected="(opt) => $emit('need-selected', opt)"
+          />
 
           <info-panel :infotype="'note'" :icon="'fa-info-circle'" v-if="location.currentBusiness == null || showLists">
             {{ $t('sidebar.info-about-us') }} <a href="#" @click="$bvModal.show('about-us')">{{ $t('sidebar.info-link-text') }}</a
@@ -78,8 +83,8 @@ export default {
     highlightFilteredMarkers: Array,
     location: { locValue: Number, locId: String, isSetByMap: Boolean, currentBusiness: Object },
     showList: Boolean,
-    listType: String,
-    warning: String
+    warning: String,
+    neededCategories: Array
   },
   data() {
     return {
