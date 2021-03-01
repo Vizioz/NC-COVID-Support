@@ -20,9 +20,6 @@
               </div>
             </div>
           </div>
-          <template v-if="business.description">
-            <p>{{ business.description }}</p>
-          </template>
           <div v-if="!snippet && getAddress(business) !== ''">
             <b>{{ $t('label.address') }}:</b><br />
             {{ getAddress(business) }}<br />
@@ -31,17 +28,11 @@
             </span>
             <p id="directions-options-expanded" v-if="directionsBool" class="directions-options list-item">
               <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
-              <icon-list-item
-                class="list-item"
-                v-if="iOS"
-                icon="fa fa-apple"
-                title="Apple Maps"
-                :link="appleDirectionsLink(business.marker)"
-              />
+              <icon-list-item class="list-item" v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
               <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
             </p>
           </div>
-          <p>
+          <p class="business-options" v-if="!snippet">
             <icon-list-item
               v-for="(opt, index) in business.options"
               v-bind:key="index"
@@ -50,7 +41,7 @@
             />
           </p>
 
-          <p>
+          <p v-if="!snippet" class="business-actions">
             <icon-list-item v-if="business.contact" icon="fa-phone-alt" :title="business.contact" :link="'tel:' + business.contact" />
 
             <icon-list-item
@@ -60,7 +51,7 @@
               :link="'tel:' + business.contactspanish"
             />
 
-            <icon-list-item v-if="business.weblink" icon="fa-globe" :title="getDomain(business.weblink)" :link="business.weblink" />
+            <icon-list-item v-if="business.webLink" icon="fa-globe" :title="getDomain(business.webLink)" :link="business.webLink" />
 
             <icon-list-item
               v-if="business.twitter"
@@ -96,55 +87,52 @@
               />
             </span>
             <span @click.stop class="list-item">
-              <icon-list-item
-                v-if="business.marker.gsx$contact !== undefined && !!business.marker.gsx$contact.$t"
-                icon="fa-phone-alt"
-                :title="$t('call')"
-                :link="'tel:' + business.marker.gsx$contact.$t"
-              />
+              <icon-list-item v-if="business.contact" icon="fa-phone-alt" :title="$t('call')" :link="'tel:' + business.contact" />
             </span>
             <span @click.stop class="list-item">
-              <icon-list-item
-                v-if="business.marker.gsx$weblink !== undefined && !!business.marker.gsx$weblink.$t"
-                icon="fa-globe"
-                :title="$t('website')"
-                :link="business.marker.gsx$weblink.$t"
-              />
+              <icon-list-item v-if="business.webLink" icon="fa-globe" :title="$t('website')" :link="business.webLink" />
             </span>
           </p>
           <p class="directions-options-expanded" id="directions-options-snippet" v-if="snippet && directionsBool" @click.stop>
-            <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business.marker)" />
-            <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business.marker)" />
-            <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business.marker)" />
+            <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
+            <icon-list-item v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
+            <icon-list-item icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
           </p>
 
-          <opening-hours :openHours="business.openHours" :title="$t('label.openinghours')" :description="business.status"></opening-hours>
           <opening-hours
+            v-if="!snippet"
+            :openHours="business.openHours"
+            :title="$t('label.openinghours')"
+            :description="business.status"
+          ></opening-hours>
+          <opening-hours
+            v-if="!snippet"
             :openHours="Array.isArray(business.specialHours) ? business.specialHours : []"
             :title="$t('label.seniorhours')"
             :description="Array.isArray(business.specialHours) ? '' : business.specialHours"
           ></opening-hours>
-          <opening-hours :title="$t('label.holidayhours')" :description="business.holidaysHours"></opening-hours>
+          <opening-hours v-if="!snippet" :title="$t('label.holidayhours')" :description="business.holidaysHours"></opening-hours>
 
-          <template v-if="business.instructions">
-            <p>
-              <b>{{ $t('label.instructions') }}:</b><br />{{ business.instructions }}
+          <div v-if="!snippet">
+            <template v-if="business.instructions">
+              <p>
+                <b>{{ $t('label.instructions') }}:</b><br />{{ business.instructions }}
+              </p>
+            </template>
+            <template v-if="business.offers !== undefined && !!business.offers">
+              <p>
+                <b>{{ $t('label.offers') }}:</b><br />{{ business.offers }}
+              </p>
+            </template>
+            <template v-if="business.notes">
+              <p>
+                <b>{{ $t('label.notes') }}:</b><br />{{ business.notes }}
+              </p>
+            </template>
+            <p class="updated" v-if="getLastUpdatedDate != 'Invalid Date'">
+              {{ $t('label.details-last-updated') }}: {{ getLastUpdatedDate }}
             </p>
-          </template>
-          <template v-if="business.offers !== undefined && !!business.offers">
-            <p>
-              <b>{{ $t('label.offers') }}:</b><br />{{ business.offers }}
-            </p>
-          </template>
-          <template v-if="business.notes">
-            <p>
-              <b>{{ $t('label.notes') }}:</b><br />{{ business.notes }}
-            </p>
-          </template>
-
-          <p class="updated" v-if="getLastUpdatedDate != 'Invalid Date'">
-            {{ $t('label.details-last-updated') }}: {{ getLastUpdatedDate }}
-          </p>
+          </div>
         </div>
       </b-list-group-item>
     </b-list-group>

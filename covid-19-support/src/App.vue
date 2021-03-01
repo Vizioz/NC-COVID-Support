@@ -239,6 +239,7 @@ export default {
         t.showList = val !== 0
         t.highlightFilters = []
         t.locationData.currentBusiness = null
+        t.warningMobile = null
       })
 
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
@@ -293,7 +294,13 @@ export default {
 
       // Filter out the boolean items
       this.highlightFilters.forEach((element) => {
-        markers = markers.filter((c) => c.marker.options.includes(element))
+        markers = markers.filter((c) => {
+          if (element === 'farmersmarket') {
+            return c.marker.category.toLowerCase() === element
+          } else {
+            return c.marker.options.includes(element)
+          }
+        })
       })
 
       return markers
