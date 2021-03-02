@@ -41,7 +41,7 @@
 
         <resource-map
           :filteredMarkers="filteredMarkers"
-          :class="{ noselection: need == 0 }"
+          :class="{ noselection: need == 0 || !filterOptions || !filterOptions.length }"
           :location="locationData"
           :attribution="attribution"
           @location-selected="locationSelected"
