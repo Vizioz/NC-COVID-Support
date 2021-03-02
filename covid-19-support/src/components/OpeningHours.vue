@@ -67,14 +67,14 @@ export default {
 
       if (hours === 0) {
         hours = 12
-        t = 'AM'
+        t = 'am'
       } else if (hours > 0 && hours < 12) {
-        t = 'AM'
+        t = 'am'
       } else if (hours === 12) {
-        t = 'PM'
+        t = 'pm'
       } else {
         hours = hours - 12
-        t = 'PM'
+        t = 'pm'
       }
 
       minutes = !isNaN(minutes) && minutes > 0 ? ':' + minutes : ''
@@ -93,6 +93,7 @@ export default {
 .oh-name {
   padding-right: 20px;
   vertical-align: top;
+  text-transform: capitalize;
 }
 
 .closed {
