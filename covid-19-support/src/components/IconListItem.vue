@@ -16,6 +16,9 @@
           <slot>
             <span class="title" v-if="link == null || link == ''">{{ title }}</span>
           </slot>
+          <slot>
+            <span class="caption" v-if="caption">{{ caption }}</span>
+          </slot>
         </div>
       </div>
     </template>
@@ -31,6 +34,9 @@
             <span class="title">{{ title }}</span>
           </slot>
         </div>
+        <slot>
+          <span class="caption" v-if="caption">{{ caption }}</span>
+        </slot>
       </div>
     </template>
   </div>
@@ -50,7 +56,8 @@ export default {
     link: { type: String },
     icon: { type: String },
     image: { type: String },
-    iconSet: { type: String }
+    iconSet: { type: String },
+    caption: { type: String }
   },
   computed: {
     generateIcon() {
@@ -102,5 +109,9 @@ export default {
 
 .ilTitle {
   min-width: 160px;
+}
+
+.caption {
+  display: block;
 }
 </style>

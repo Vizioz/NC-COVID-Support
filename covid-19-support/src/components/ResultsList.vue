@@ -11,10 +11,12 @@
         :ref="'result' + index"
         @click="$emit('location-selected', { locValue: index, locId: item.marker.id, isSetByMap: false })"
       >
-        <h5 class="resultTitle">{{ item.marker.name }}</h5>
-        <template v-if="!!item.marker.providerAddLoc">
-          <div class="addloc">{{ item.marker.providerAddLoc }}</div>
-        </template>
+        <div class="resultTitleBlock">
+          <h5 class="resultTitle">{{ item.marker.name }}</h5>
+          <template v-if="!!item.marker.providerAddLoc">
+            <div class="addloc">{{ item.marker.providerAddLoc }}</div>
+          </template>
+        </div>
         <div v-if="!item.oc" class="closed">{{ getClosedMessage() }}</div>
         <span class="resultAddress">
           <span v-if="!!item.marker.classificationType">{{ item.marker.classificationType }}<br /></span>
@@ -112,10 +114,6 @@ export default {
   border-top: 1px solid #ddd;
 }
 
-.addloc {
-  margin-bottom: 8px;
-}
-
 .resultList {
   overflow-y: overlay;
   max-height: calc(100vh - #{$mobile-search-filters-height + $mobile-nav-height});
@@ -162,10 +160,15 @@ export default {
   margin-bottom: 0;
 }
 
+.resultTitleBlock {
+  margin-bottom: 8px;
+}
+
 .resultAddress {
   font-size: 0.8rem;
   display: block;
-  max-width: 262px;
+  max-width: 100%;
+  margin-bottom: 8px;
 }
 // .closedOne {
 //   /* background: #f9f9f9 !important; */

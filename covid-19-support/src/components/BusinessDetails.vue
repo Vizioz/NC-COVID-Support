@@ -21,18 +21,24 @@
               </div>
             </div>
           </div>
+
+          <tag-list :tags="business.tags"></tag-list>
+
           <div v-if="!snippet && getAddress(business) !== ''">
             <b>{{ $t('label.address') }}:</b><br />
             {{ getAddress(business) }}<br />
-            <span class="list-item" @click.stop="getDirections">
-              <icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" />
-            </span>
-            <p id="directions-options-expanded" v-if="directionsBool" class="directions-options list-item">
-              <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
-              <icon-list-item class="list-item" v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
-              <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
-            </p>
+            <div v-if="business.lat && business.lng">
+              <span class="list-item" @click.stop="getDirections">
+                <icon-list-item icon="fa-directions" :title="$t('getdirections')" link="#" />
+              </span>
+              <p id="directions-options-expanded" v-if="directionsBool" class="directions-options list-item">
+                <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
+                <icon-list-item class="list-item" v-if="iOS" icon="fa fa-apple" title="Apple Maps" :link="appleDirectionsLink(business)" />
+                <icon-list-item class="list-item" icon="fa-waze" iconSet="fab" title="Waze" :link="wazeDirectionsLink(business)" />
+              </p>
+            </div>
           </div>
+
           <p class="business-options" v-if="!snippet && business.options.length">
             <icon-list-item
               v-for="(opt, index) in business.options"
@@ -41,7 +47,6 @@
               :title="$tc('label.' + opt)"
             />
           </p>
-          <tag-list :tags="business.tags"></tag-list>
 
           <p v-if="!snippet" class="business-actions">
             <icon-list-item v-if="business.contact" icon="fa-phone-alt" :title="business.contact" :link="'tel:' + business.contact" />
@@ -52,6 +57,28 @@
               :title="business.contactspanish + ' (' + $t('languages.es').toLowerCase() + ')'"
               :link="'tel:' + business.contactspanish"
             />
+            <icon-list-item
+              v-for="(phone, index) in business.languagePhones"
+              v-bind:key="index"
+              icon="fa-phone-alt"
+              :title="phone.phoneNumber + ' (' + phone.language + ')'"
+              :link="'tel:' + phone.phoneNumber"
+            />
+            <icon-list-item
+              v-if="business.crisisPhone"
+              icon="fa-phone-alt"
+              :title="business.crisisPhone + ' (' + $t('label.crisisphone') + ')'"
+              :link="'tel:' + business.crisisPhone"
+              :caption="business.crisisPhoneInstructions"
+            />
+            <icon-list-item
+              v-if="business.afterHoursPhone"
+              icon="fa-phone-alt"
+              :title="business.afterHoursPhone + ' (' + $t('label.afterhoursphone') + ')'"
+              :link="'tel:' + business.afterHoursPhone"
+              :caption="business.afterHoursPhoneInstructions"
+            >
+            </icon-list-item>
 
             <icon-list-item v-if="business.webLink" icon="fa-globe" :title="getDomain(business.webLink)" :link="business.webLink" />
 
@@ -79,7 +106,7 @@
             />
           </p>
           <p v-if="snippet" class="business-actions">
-            <span class="list-item" v-if="getAddress(business) !== ''" @click.stop="getDirections">
+            <span class="list-item" v-if="business.lat && business.lng" @click.stop="getDirections">
               <icon-list-item
                 class="directions"
                 :class="directionsBool ? 'selected' : 'a'"
@@ -96,7 +123,13 @@
             </span>
           </p>
           <p class="directions-options-expanded" id="directions-options-snippet" v-if="snippet && directionsBool" @click.stop>
-            <icon-list-item class="list-item" icon="fa fa-google" title="Google Maps" :link="googleDirectionsLink(business)" />
+            <icon-list-item
+              v-if="getAddress(business) !== ''"
+              class="list-item"
+              icon="fa fa-google"
+              title="Google Maps"
+              :link="googleDirectionsLink(business)"
+            />
             <icon-list-item
               v-if="iOS && business.lat && business.lng"
               icon="fa fa-apple"
@@ -129,6 +162,39 @@
           <div v-if="!snippet">
             <template v-if="business.longDescription">
               <p>{{ business.longDescription }}</p>
+            </template>
+            <template v-if="business.region && business.region.length">
+              <p>
+                <b>{{ $t('label.serviceregions') }}:</b>
+                <tag-list :tags="business.region"></tag-list>
+              </p>
+            </template>
+            <template v-if="business.populationsServed && business.populationsServed.length">
+              <p>
+                <b>{{ $t('label.populationsserved') }}:</b>
+                <tag-list :tags="business.populationsServed"></tag-list>
+              </p>
+            </template>
+            <template v-if="business.languagesSupported && business.languagesSupported.length">
+              <p>
+                <b>{{ $t('label.languagessupported') }}:</b>
+                <tag-list :tags="business.languagesSupported"></tag-list>
+              </p>
+            </template>
+            <template v-if="business.eligibility">
+              <p>
+                <b>{{ $t('label.eligibility') }}:</b><br />{{ business.eligibility }}
+              </p>
+            </template>
+            <template v-if="business.resourceAccessNotes">
+              <p class="pre">
+                <b>{{ $t('label.howtoaccess') }}:</b><br />{{ business.resourceAccessNotes }}
+              </p>
+            </template>
+            <template v-if="business.geographicRestrictions">
+              <p>
+                <b>{{ $t('label.geographicrestrictions') }}:</b><br />{{ business.geographicRestrictions }}
+              </p>
             </template>
             <template v-if="business.instructions">
               <p>
@@ -184,14 +250,11 @@ export default {
       return urlParts[0]
     },
     addressUrl(business) {
-      var address = business.address
-      if (address) {
-        address = address.replace(/\s/g, '%20')
-        var city = business.city.replace(/\s/g, '%20')
-        var state = business.state.replace(/\s/g, '%20')
-        address = address + '%2C%20' + city + '%2C%20' + state + '%20' + business.zip
-      }
-      return address
+      var address = business.address ? business.address.replace(/\s/g, '%20') : ''
+      var city = business.city ? business.city.replace(/\s/g, '%20') : ''
+      var state = business.state ? business.state.replace(/\s/g, '%20') : ''
+
+      return address + '%2C%20' + city + '%2C%20' + state + '%20' + business.zip
     },
     appleDirectionsLink(business) {
       return 'http://maps.apple.com/?q=' + business.address + '&ll=' + business.lat + '%2C' + business.lng
@@ -309,7 +372,7 @@ export default {
 }
 
 .busName {
-  margin-left: 54px;
+  margin-left: 64px;
   min-width: 208px;
 }
 

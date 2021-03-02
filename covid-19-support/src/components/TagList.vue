@@ -24,6 +24,7 @@ export default {
     background: theme-color('tertiary');
     display: inline-block;
     margin-bottom: 4px;
+    color: $white;
 
     &:not(:last-child) {
       margin-right: 4px;
