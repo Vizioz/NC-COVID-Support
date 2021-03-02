@@ -35,8 +35,10 @@ export default {
         return myDays
       }
 
+      let t = this
+
       this.openHours.forEach((openHour) => {
-        let dayName = openHour.day
+        let dayName = t.$tc('dayofweek.' + openHour.day)
         let hours = []
         openHour.hours.forEach((hour) => {
           hours.push(this.getHoursRangeVal(hour))
@@ -93,7 +95,6 @@ export default {
 .oh-name {
   padding-right: 20px;
   vertical-align: top;
-  text-transform: capitalize;
 }
 
 .closed {
