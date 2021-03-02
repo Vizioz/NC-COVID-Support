@@ -25,6 +25,9 @@
           </div>
         </l-control>
         <l-tile-layer :url="mapUrl" :attribution="attribution" />
+        <div class="region-area" v-for="(item, index) in regions" v-bind:key="index">
+          <l-polygon :lat-lngs="item.coordinates" :color="item.color"></l-polygon>
+        </div>
         <l-circle
           name="Accuracy"
           :lat-lng="userLocationData"
@@ -83,7 +86,7 @@
 
 <script>
 import { BAlert } from 'bootstrap-vue'
-import { LMap, LTileLayer, LMarker, LControl, LCircle, LCircleMarker } from 'vue2-leaflet'
+import { LMap, LTileLayer, LMarker, LControl, LCircle, LCircleMarker, LPolygon } from 'vue2-leaflet'
 import { latLng, Icon, ExtraMarkers } from 'leaflet'
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
 import IconListItem from './IconListItem.vue'
@@ -106,6 +109,7 @@ export default {
     LControl,
     LCircle,
     LCircleMarker,
+    LPolygon,
     'v-marker-cluster': Vue2LeafletMarkerCluster,
     IconListItem
   },
@@ -114,7 +118,8 @@ export default {
     location: { locValue: Number, currentBusiness: Object, isSetByMap: Boolean },
     mapUrl: String,
     attribution: String,
-    centroid: { lat: Number, lng: Number }
+    centroid: { lat: Number, lng: Number },
+    regions: Array
   },
   data() {
     return {
@@ -181,6 +186,7 @@ export default {
   },
   methods: {
     centerUpdated(center) {
+      console.log(this.regions)
       this.center = center
       this.$emit('center', center)
     },

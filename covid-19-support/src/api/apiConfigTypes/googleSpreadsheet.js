@@ -55,6 +55,15 @@ async function getResource(baseUrl) {
 }
 
 /**
+ * Get regions area
+ * @param {string} baseUrl
+ */
+async function getRegionsArea(baseUrl) {
+  console.log(baseUrl)
+  return []
+}
+
+/**
  * DataProviderConfig
  */
-export default new DataProviderConfig(getMenuSettings, fetchData, getByCategory, getResource)
+export default new DataProviderConfig(getMenuSettings, fetchData, getByCategory, getResource, getRegionsArea)

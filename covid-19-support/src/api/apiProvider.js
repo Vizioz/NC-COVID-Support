@@ -19,12 +19,14 @@ export class DataProviderConfig {
   fetchData
   getByCategory
   getResource
+  getRegionsArea
 
-  constructor(getMenuSettings, fetchData, getByCategory, getResource) {
+  constructor(getMenuSettings, fetchData, getByCategory, getResource, getRegionsArea) {
     this.getMenuSettings = getMenuSettings
     this.fetchData = fetchData
     this.getByCategory = getByCategory
     this.getResource = getResource
+    this.getRegionsArea = getRegionsArea
   }
 }
 
@@ -78,6 +80,14 @@ export class DataProvider {
   getResource(id) {
     if (this.#config && this.#config.getResource) {
       return this.#config.getResource(id, this.#baseUrl)
+    } else {
+      return []
+    }
+  }
+
+  getRegionsArea() {
+    if (this.#config && this.#config.getResource) {
+      return this.#config.getRegionsArea(this.#baseUrl)
     } else {
       return []
     }

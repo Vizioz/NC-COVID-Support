@@ -51,6 +51,15 @@ async function getResource(id, baseUrl) {
 }
 
 /**
+ * Get regions area
+ * @param {string} baseUrl
+ */
+async function getRegionsArea(baseUrl) {
+  let response = await Vue.$http.get(baseUrl + '/resource/GetRegionsArea')
+  return response.data
+}
+
+/**
  * DataProviderConfig
  */
-export default new DataProviderConfig(getMenuSettings, fetchData, getByCategory, getResource)
+export default new DataProviderConfig(getMenuSettings, fetchData, getByCategory, getResource, getRegionsArea)

@@ -44,6 +44,7 @@
           :class="{ noselection: need == 0 || !filterOptions || !filterOptions.length }"
           :location="locationData"
           :attribution="attribution"
+          :regions="regions"
           @location-selected="locationSelected"
           @location-unselected="locationUnselected"
           @bounds="boundsUpdated"
@@ -153,7 +154,8 @@ export default {
       markers: [],
       filterOptions: [],
       warning: theme.warning,
-      warningMobile: theme.warning
+      warningMobile: theme.warning,
+      regions: []
     }
   },
   mounted() {
@@ -218,9 +220,10 @@ export default {
 
       return marker.isOpen
     },
-    needSelected(val) {
+    async needSelected(val) {
       let t = this
-      this.$api.fetchByCategory(val).then(function (response) {
+
+      t.$api.fetchByCategory(val).then(function (response) {
         var markers = response.markers
         var filters = response.highlightFilters
 
@@ -243,6 +246,23 @@ export default {
         t.highlightFilters = []
         t.locationData.currentBusiness = null
         t.warningMobile = null
+      })
+
+      t.$api.getRegionsArea().then(function (response) {
+        var regionsList = []
+
+        response.forEach((item) => {
+          try {
+            let data = JSON.parse(item.areaJson)
+            regionsList.push({
+              coordinates: data.geometry.coordinates[0]
+            })
+          } catch {
+            // skip if malformed json
+          }
+        })
+
+        t.regions = regionsList
       })
 
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
@@ -269,6 +289,7 @@ export default {
     },
     async locationSelected(val) {
       const resource = await this.$api.getResource(val.locId)
+
       val.currentBusiness = resource
       this.locationData = val
       this.isFilterOpen = true
