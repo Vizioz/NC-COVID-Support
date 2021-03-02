@@ -44,7 +44,7 @@
           :class="{ noselection: need == 0 || !filterOptions || !filterOptions.length }"
           :location="locationData"
           :attribution="attribution"
-          :regions="regions"
+          :geoJson="geoJson"
           @location-selected="locationSelected"
           @location-unselected="locationUnselected"
           @bounds="boundsUpdated"
@@ -155,7 +155,7 @@ export default {
       filterOptions: [],
       warning: theme.warning,
       warningMobile: theme.warning,
-      regions: []
+      geoJson: null
     }
   },
   mounted() {
@@ -249,20 +249,20 @@ export default {
       })
 
       t.$api.getRegionsArea().then(function (response) {
-        var regionsList = []
+        var features = []
 
         response.forEach((item) => {
           try {
-            let data = JSON.parse(item.areaJson)
-            regionsList.push({
-              coordinates: data.geometry.coordinates[0]
-            })
+            features.push(item.areaJson)
           } catch {
             // skip if malformed json
           }
         })
-
-        t.regions = regionsList
+        t.geoJson = {
+          bbox: [-84.3216191348785, 33.8343686234225, -75.4599807261118, 36.5884147052891],
+          features: features,
+          type: 'FeatureCollection'
+        }
       })
 
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
