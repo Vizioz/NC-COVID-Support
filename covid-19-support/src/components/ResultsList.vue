@@ -123,10 +123,10 @@ export default {
   @include media-breakpoint-up(md) {
     margin-top: 0;
     padding-bottom: 0;
-    max-height: calc(100vh - 268px);
+    max-height: calc(100vh - 340px);
   }
   @include media-breakpoint-up(lg) {
-    max-height: calc(100vh - 230px);
+    max-height: calc(100vh - 302px);
   }
 }
 
