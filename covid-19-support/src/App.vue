@@ -230,52 +230,47 @@ export default {
       return marker.isOpen
     },
     async needSelected(val) {
-      let t = this
+      const category = await this.$api.fetchByCategory(val)
 
-      t.$api.fetchByCategory(val).then(function (response) {
-        var markers = response.markers
-        var filters = response.highlightFilters
+      var markers = category.markers
+      var filters = category.highlightFilters
 
-        var retList = extend(
-          markers.map((marker) => ({
-            marker,
-            oc: t.isOpen(marker),
-            distance:
-              marker.lat !== undefined && marker.lng !== undefined
-                ? haversineDistance([t.centroid.lat, t.centroid.lng], [marker.lat, marker.lng], true)
-                : 0
-          }))
-        ).sort(sortByDistance)
+      var retList = extend(
+        markers.map((marker) => ({
+          marker,
+          oc: this.isOpen(marker),
+          distance:
+            marker.lat !== undefined && marker.lng !== undefined
+              ? haversineDistance([this.centroid.lat, this.centroid.lng], [marker.lat, marker.lng], true)
+              : 0
+        }))
+      ).sort(sortByDistance)
 
-        t.filterOptions = filters.split(',').filter((opt) => opt !== null && opt != undefined && opt !== '')
-        t.markers = retList
-        t.need = val
-        t.showList = val !== 0
-        t.isListOnly = response.showListFirst
-        t.showCounties = response.showCounties
-        t.highlightFilters = []
-        t.regionFilters = []
-        t.locationData.currentBusiness = null
-        t.warningMobile = null
-      })
+      this.filterOptions = filters.split(',').filter((opt) => opt !== null && opt != undefined && opt !== '')
+      this.markers = retList
+      this.need = val
+      this.showList = val !== 0
+      this.isListOnly = category.showListFirst
+      this.showCounties = category.showCounties
+      this.highlightFilters = []
+      this.regionFilters = []
+      this.locationData.currentBusiness = null
+      this.warningMobile = null
 
       window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
     },
     async getRegionsArea() {
-      let t = this
-      t.$api.getRegionsArea().then(function (response) {
-        var features = []
-
-        response.forEach((item) => {
-          item.areaJson.toggle = false
-          features.push(item.areaJson)
-        })
-        t.geoJson = {
-          bbox: [-84.3216191348785, 33.8343686234225, -75.4599807261118, 36.5884147052891],
-          features: features,
-          type: 'FeatureCollection'
-        }
+      const regions = await this.$api.getRegionsArea()
+      var features = []
+      regions.forEach((item) => {
+        item.areaJson.toggle = false
+        features.push(item.areaJson)
       })
+      this.geoJson = {
+        bbox: [-84.3216191348785, 33.8343686234225, -75.4599807261118, 36.5884147052891],
+        features: features,
+        type: 'FeatureCollection'
+      }
     },
     changeLanguage(item) {
       this.language = item
