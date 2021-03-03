@@ -209,8 +209,8 @@ export default {
       this.highlightFilters = addOrRemove(this.highlightFilters, content.need)
     },
     regionSelected(feature) {
+      feature.toggle = !feature.toggle
       this.regionFilters = addOrRemove(this.regionFilters, feature.properties.CO_NAME)
-      console.log(this.regionFilters)
     },
     isAnyDaySelected(day) {
       return day >= dayAny
@@ -253,6 +253,7 @@ export default {
         t.isListOnly = response.showListFirst
         t.showCounties = response.showCounties
         t.highlightFilters = []
+        t.regionFilters = []
         t.locationData.currentBusiness = null
         t.warningMobile = null
       })
