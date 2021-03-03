@@ -44,7 +44,7 @@
           :class="{ noselection: need == 0 || !filterOptions || !filterOptions.length }"
           :location="locationData"
           :attribution="attribution"
-          :geoJson="geoJson"
+          :geoJson="selectedGeoJson"
           :regionFilters="regionFilters"
           @location-selected="locationSelected"
           @location-unselected="locationUnselected"
@@ -114,6 +114,7 @@ export default {
       Vue.prototype.$api = r
       t.fetchCategories()
       t.fetchData()
+      t.getRegionsArea()
     })
   },
   components: {
@@ -258,6 +259,10 @@ export default {
         t.warningMobile = null
       })
 
+      window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
+    },
+    async getRegionsArea() {
+      let t = this
       t.$api.getRegionsArea().then(function (response) {
         var features = []
 
@@ -271,8 +276,6 @@ export default {
           type: 'FeatureCollection'
         }
       })
-
-      window.gtag('event', 'What do you need?', { event_category: 'Search - (' + this.language.name + ')', event_label: val })
     },
     changeLanguage(item) {
       this.language = item
@@ -372,6 +375,9 @@ export default {
         obj.oc = true
         return obj
       })
+    },
+    selectedGeoJson() {
+      return this.showCounties ? this.geoJson : null
     }
   }
 }
