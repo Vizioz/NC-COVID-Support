@@ -117,7 +117,8 @@ export default {
     mapUrl: String,
     attribution: String,
     centroid: { lat: Number, lng: Number },
-    geoJson: Object
+    geoJson: Object,
+    regionFilters: Array[String]
   },
   data() {
     return {
@@ -180,14 +181,14 @@ export default {
       // if (!this.enableTooltip) {
       //   return () => {}
       // }
+      let t = this
       return (feature, layer) => {
         layer.bindTooltip('<div>' + feature.properties.CO_NAME + '</div>', {
           permanent: true,
           sticky: true
         }),
           layer.on('click', function (e) {
-            e.sourceTarget.feature.toggle = !e.sourceTarget.feature.toggle
-            console.log(e.sourceTarget.feature.properties.CO_NAME + ' -- ' + e.sourceTarget.feature.toggle)
+            t.$emit('region-selected', e.sourceTarget.feature)
           })
       }
     },

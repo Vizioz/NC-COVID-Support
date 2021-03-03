@@ -163,10 +163,10 @@
             <template v-if="business.longDescription">
               <p>{{ business.longDescription }}</p>
             </template>
-            <template v-if="business.region && business.region.length">
+            <template v-if="business.category === 'socialServices' && business.region && business.region.length">
               <p>
                 <b>{{ $t('label.serviceregions') }}:</b>
-                <tag-list :tags="business.region"></tag-list>
+                <tag-list :tags="regionTags"></tag-list>
               </p>
             </template>
             <template v-if="business.populationsServed && business.populationsServed.length">
@@ -297,6 +297,11 @@ export default {
     },
     agent() {
       return navigator.userAgent
+    },
+    regionTags() {
+      return this.business.region.map((r) => {
+        return r.name
+      })
     }
   }
 }

@@ -45,10 +45,12 @@
           :location="locationData"
           :attribution="attribution"
           :geoJson="geoJson"
+          :regionFilters="regionFilters"
           @location-selected="locationSelected"
           @location-unselected="locationUnselected"
           @bounds="boundsUpdated"
           @center="centerUpdated"
+          @region-selected="regionSelected"
           :mapUrl="mapUrl"
           :centroid="centroid"
         />
@@ -137,7 +139,9 @@ export default {
       locationData: { locValue: null, locId: null, currentBusiness: null, isSetByMap: false },
       showList: false,
       isListOnly: false,
+      showCounties: false,
       highlightFilters: [],
+      regionFilters: [],
       bounds: null,
       centroid: {
         lat: theme.settings.initialMapCenter.lat,
@@ -204,6 +208,10 @@ export default {
     boxSelected(content) {
       this.highlightFilters = addOrRemove(this.highlightFilters, content.need)
     },
+    regionSelected(feature) {
+      this.regionFilters = addOrRemove(this.regionFilters, feature.properties.CO_NAME)
+      console.log(this.regionFilters)
+    },
     isAnyDaySelected(day) {
       return day >= dayAny
     },
@@ -242,7 +250,8 @@ export default {
         t.markers = retList
         t.need = val
         t.showList = val !== 0
-        t.isListOnly = response.showListOnly
+        t.isListOnly = response.showListFirst
+        t.showCounties = response.showCounties
         t.highlightFilters = []
         t.locationData.currentBusiness = null
         t.warningMobile = null
@@ -327,6 +336,21 @@ export default {
           }
         })
       })
+
+      // Filter out the selected counties
+      if (this.showCounties) {
+        this.regionFilters.forEach((element) => {
+          markers = markers.filter((c) => {
+            let hasRegion = false
+            c.marker.region.forEach((r) => {
+              if (r.id.toLowerCase() === element.toLowerCase()) {
+                hasRegion = true
+              }
+            })
+            return hasRegion
+          })
+        })
+      }
 
       return markers
     },
