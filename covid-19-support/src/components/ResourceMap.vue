@@ -25,7 +25,7 @@
           </div>
         </l-control>
         <l-tile-layer :url="mapUrl" :attribution="attribution" />
-        <l-geo-json v-if="geoJson" :geojson="geoJson"></l-geo-json>
+        <l-geo-json v-if="geoJson" :geojson="geoJson" :options="options"></l-geo-json>
         <l-circle
           name="Accuracy"
           :lat-lng="userLocationData"
@@ -139,6 +139,7 @@ export default {
         border: 'white',
         fill: '#f00'
       },
+      tog: true,
       clusterOptions: { spiderfyOnMaxZoom: true, maxClusterRadius: 40, disableClusteringAtZoom: 16 },
       showKey: false
     }
@@ -150,6 +151,46 @@ export default {
     })
   },
   computed: {
+    options() {
+      return {
+        style: function style(feature) {
+          return {
+            weight: 2,
+            opacity: feature.toggle ? 0.1 : 0.05,
+            color: '#374a91',
+            fillOpacity: feature.toggle ? 0.1 : 0.05,
+            fillColor: '#374a91'
+          }
+        },
+        onEachFeature: this.onEachFeatureFunction
+      }
+    },
+    styleFunction() {
+      return () => {
+        return {
+          weight: 2,
+          color: this.countyStyle.countyColor,
+          opacity: this.countyStyle.countyOpacity,
+          fillColor: this.countyStyle.countyFillColor,
+          fillOpacity: this.countyStyle.countyFillOpacity
+        }
+      }
+    },
+    onEachFeatureFunction() {
+      // if (!this.enableTooltip) {
+      //   return () => {}
+      // }
+      return (feature, layer) => {
+        layer.bindTooltip('<div>' + feature.properties.CO_NAME + '</div>', {
+          permanent: true,
+          sticky: true
+        }),
+          layer.on('click', function (e) {
+            e.sourceTarget.feature.toggle = !e.sourceTarget.feature.toggle
+            console.log(e.sourceTarget.feature.properties.CO_NAME + ' -- ' + e.sourceTarget.feature.toggle)
+          })
+      }
+    },
     mapKey() {
       return [
         {

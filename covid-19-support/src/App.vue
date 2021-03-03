@@ -253,6 +253,7 @@ export default {
 
         response.forEach((item) => {
           try {
+            item.areaJson.toggle = false
             features.push(item.areaJson)
           } catch {
             // skip if malformed json
