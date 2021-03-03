@@ -262,12 +262,8 @@ export default {
         var features = []
 
         response.forEach((item) => {
-          try {
-            item.areaJson.toggle = false
-            features.push(item.areaJson)
-          } catch {
-            // skip if malformed json
-          }
+          item.areaJson.toggle = false
+          features.push(item.areaJson)
         })
         t.geoJson = {
           bbox: [-84.3216191348785, 33.8343686234225, -75.4599807261118, 36.5884147052891],
