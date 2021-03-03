@@ -35,12 +35,27 @@ export const theme = {
   maps: {
     normal: {
       url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png',
-      attribution: '&copy; <a href="https://carto.com/">Carto</a>, &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+      attribution:
+        '&copy; <a href="https://carto.com/">Carto</a>, &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+      countyStyle: {
+        weight: 2,
+        color: '#374a91',
+        opacity: 0.1,
+        fillColor: '#374a91',
+        fillOpacity: 0.1
+      }
     },
     dark: {
       url: 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
       attribution:
-        '&copy; <a href="https://carto.com/">Carto</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        '&copy; <a href="https://carto.com/">Carto</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+      countyStyle: {
+        weight: 2,
+        color: '#2eb7cb',
+        opacity: 0.2,
+        fillColor: '#2eb7cb',
+        fillOpacity: 0.2
+      }
     }
   },
   warning: 'This site is no longer being updated'

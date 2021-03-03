@@ -53,6 +53,7 @@
           @region-selected="regionSelected"
           :mapUrl="mapUrl"
           :centroid="centroid"
+          :countyStyle="countyStyle"
         />
       </div>
     </div>
@@ -160,7 +161,8 @@ export default {
       filterOptions: [],
       warning: theme.warning,
       warningMobile: theme.warning,
-      geoJson: null
+      geoJson: null,
+      countyStyle: theme.maps.normal.countyStyle
     }
   },
   mounted() {
@@ -176,6 +178,7 @@ export default {
     setDarkMode(darkMode) {
       this.mapUrl = darkMode ? theme.maps.dark.url : theme.maps.normal.url
       this.attribution = darkMode ? theme.maps.dark.attribution : theme.maps.normal.attribution
+      this.countyStyle = darkMode ? theme.maps.dark.countyStyle : theme.maps.normal.countyStyle
     },
     // Closes the list when mobile or going to mobile as long as there are no filters selected;
     closeListOnMobile() {

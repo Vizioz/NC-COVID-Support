@@ -118,7 +118,8 @@ export default {
     attribution: String,
     centroid: { lat: Number, lng: Number },
     geoJson: Object,
-    regionFilters: Array[String]
+    regionFilters: Array[String],
+    countyStyle: Object
   },
   data() {
     return {
@@ -153,28 +154,18 @@ export default {
   },
   computed: {
     options() {
+      var t = this
       return {
         style: function style(feature) {
           return {
-            weight: 2,
-            opacity: feature.toggle ? 0.1 : 0.05,
-            color: '#374a91',
-            fillOpacity: feature.toggle ? 0.1 : 0.05,
-            fillColor: '#374a91'
+            weight: t.countyStyle.weight,
+            opacity: feature.toggle ? t.countyStyle.opacity : t.countyStyle.opacity / 2,
+            color: t.countyStyle.color,
+            fillOpacity: feature.toggle ? t.countyStyle.opacity : t.countyStyle.opacity / 2,
+            fillColor: t.countyStyle.fillColor
           }
         },
         onEachFeature: this.onEachFeatureFunction
-      }
-    },
-    styleFunction() {
-      return () => {
-        return {
-          weight: 2,
-          color: this.countyStyle.countyColor,
-          opacity: this.countyStyle.countyOpacity,
-          fillColor: this.countyStyle.countyFillColor,
-          fillOpacity: this.countyStyle.countyFillOpacity
-        }
       }
     },
     onEachFeatureFunction() {
