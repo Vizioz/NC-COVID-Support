@@ -174,7 +174,7 @@ export default {
       // }
       let t = this
       return (feature, layer) => {
-        layer.bindTooltip('<div>' + feature.properties.CO_NAME + '</div>', {
+        layer.bindTooltip('<div>' + this.toTitleCase(feature.properties.CO_NAME) + '</div>', {
           permanent: true,
           sticky: true
         }),
@@ -216,6 +216,11 @@ export default {
     }
   },
   methods: {
+    toTitleCase(str) {
+      return str.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+      })
+    },
     centerUpdated(center) {
       this.center = center
       this.$emit('center', center)

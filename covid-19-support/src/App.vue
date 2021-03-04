@@ -336,17 +336,19 @@ export default {
       })
 
       // Filter out the selected counties
-      if (this.showCounties) {
-        this.regionFilters.forEach((element) => {
-          markers = markers.filter((c) => {
-            let hasRegion = false
+      if (this.showCounties && this.regionFilters && this.regionFilters.length) {
+        markers = markers.filter((c) => {
+          let hasRegion = false
+
+          this.regionFilters.forEach((element) => {
             c.marker.region.forEach((r) => {
+              console.log(r.id.toLowerCase())
               if (r.id.toLowerCase() === element.toLowerCase()) {
                 hasRegion = true
               }
             })
-            return hasRegion
           })
+          return hasRegion
         })
       }
 
