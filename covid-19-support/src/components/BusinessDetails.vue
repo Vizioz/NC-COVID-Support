@@ -24,6 +24,7 @@
           <div v-if="snippet">
             <span
               class="business-open"
+              v-if="hasOpenClosedInfo(business)"
               :class="isOpen(business) ? 'open' : 'closed'"
               :title="isOpen(business) ? $t('label.open') : $t('label.closed')"
             >
@@ -312,6 +313,9 @@ export default {
       } else {
         return business.isOpen
       }
+    },
+    hasOpenClosedInfo(business) {
+      return business.isOpen === false || !!business.openInfo
     },
     getAddress: getAddress
   },

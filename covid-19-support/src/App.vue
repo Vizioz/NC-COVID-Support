@@ -346,7 +346,6 @@ export default {
 
           this.regionFilters.forEach((element) => {
             c.marker.region.forEach((r) => {
-              console.log(r.id.toLowerCase())
               if (r.id.toLowerCase() === element.toLowerCase()) {
                 hasRegion = true
               }
@@ -373,7 +372,7 @@ export default {
       if (!this.isAnyDaySelected(this.day)) {
         return contained
       }
-      console.log(contained)
+
       return contained.map((m) => {
         let obj = Object.assign({}, m)
         obj.oc = m.oc

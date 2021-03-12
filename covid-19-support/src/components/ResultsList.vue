@@ -21,7 +21,12 @@
           <span v-if="!!item.marker.classificationType">{{ item.marker.classificationType }}<br /></span>
           {{ getAddress(item.marker) }}
         </span>
-        <span class="resultOpen" :class="item.oc ? 'open' : 'closed'" :title="item.oc ? $t('label.open') : $t('label.closed')">
+        <span
+          class="resultOpen"
+          v-if="hasOpenClosedInfo(item)"
+          :class="item.oc ? 'open' : 'closed'"
+          :title="item.oc ? $t('label.open') : $t('label.closed')"
+        >
           <i class="fas fa-clock" />
           <span>{{ getOpenClosedMessage(item) }}</span>
         </span>
@@ -112,6 +117,9 @@ export default {
     },
     hasOption(marker, option) {
       return marker.options.includes(option)
+    },
+    hasOpenClosedInfo(item) {
+      return item.marker.isOpen === false || !!item.marker.openInfo
     }
   }
 }
