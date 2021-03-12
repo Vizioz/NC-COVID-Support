@@ -15,7 +15,7 @@
               <i :class="businessIcon(business)"></i>
               <div class="busName">
                 <h5>{{ business.name }}</h5>
-                <span v-if="!!business.providerAddLoc">{{ business.providerAddLoc }}</span>
+                <span v-if="!!business.providerAddLoc && business.providerAddLoc !== business.name">{{ business.providerAddLoc }}</span>
                 <div v-if="!!business.classificationType">{{ business.classificationType }}</div>
                 <div v-if="!!business.description">{{ business.description }}</div>
               </div>

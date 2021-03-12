@@ -13,7 +13,7 @@
       >
         <div class="resultTitleBlock">
           <h5 class="resultTitle">{{ item.marker.name }}</h5>
-          <template v-if="!!item.marker.providerAddLoc">
+          <template v-if="!!item.marker.providerAddLoc && item.marker.providerAddLoc !== item.marker.name">
             <div class="addloc">{{ item.marker.providerAddLoc }}</div>
           </template>
         </div>
