@@ -17,10 +17,13 @@
             <div class="addloc">{{ item.marker.providerAddLoc }}</div>
           </template>
         </div>
-        <div v-if="!item.oc" class="closed">{{ getClosedMessage() }}</div>
         <span class="resultAddress">
           <span v-if="!!item.marker.classificationType">{{ item.marker.classificationType }}<br /></span>
           {{ getAddress(item.marker) }}
+        </span>
+        <span class="resultOpen" :class="item.oc ? 'open' : 'closed'" :title="item.oc ? $t('label.open') : $t('label.closed')">
+          <i class="fas fa-clock" />
+          <span>{{ getOpenClosedMessage(item) }}</span>
         </span>
         <template v-if="hasOption(item.marker, 'discountmedical')">
           <span :title="$tc('label.discountmedical', 1)"><i class="fas fa-user-md" /></span>
@@ -52,6 +55,9 @@
           </span>
         </template> -->
         <tag-list :tags="item.marker.tags"></tag-list>
+        <div v-if="item.marker.description" class="result-item-description">
+          <span>{{ item.marker.description }}</span>
+        </div>
       </b-list-group-item>
     </b-list-group>
   </div>
@@ -60,8 +66,7 @@
 <script>
 import TagList from './TagList.vue'
 
-import { weekdaysJs } from '../constants'
-import { getShortAddress, optionIcon } from '../utilities'
+import { getHoursVal, getShortAddress, optionIcon } from '../utilities'
 
 export default {
   name: 'ResultsList',
@@ -91,12 +96,16 @@ export default {
     getAddress(marker) {
       return getShortAddress(marker)
     },
-    getClosedMessage() {
-      if (this.selectedDay > 6) {
-        return this.$t(`label.closed-today`)
+    getOpenClosedMessage(item) {
+      var label = item.oc ? this.$t('label.open') : this.$t('label.closed')
+
+      if (item.marker.isOpen && item.marker.openInfo) {
+        var time = getHoursVal(item.marker.openInfo.openTime)
+        var day = this.$t('dayofweek.' + item.marker.openInfo.openDay)
+        label += '. ' + this.$t('label.open-on').replace('{DAY}', day).replace('{TIME}', time)
       }
 
-      return `${this.$t('label.closed-on')} ${this.$t(`dayofweek.${weekdaysJs[this.selectedDay].day}`)}`
+      return label
     },
     getClassIcon(option) {
       return 'fas ' + optionIcon(option)
@@ -153,6 +162,12 @@ export default {
     font-size: 1rem;
     margin-top: 6px;
   }
+
+  .result-item-description {
+    margin-right: 1.25rem;
+    padding-top: 6px;
+    border-top: 1px solid theme-color-level('secondary', 0.75);
+  }
 }
 
 .resultTitle {
@@ -168,6 +183,11 @@ export default {
   font-size: 0.8rem;
   display: block;
   max-width: 100%;
+  margin-bottom: 8px;
+}
+
+.resultOpen {
+  display: block;
   margin-bottom: 8px;
 }
 // .closedOne {

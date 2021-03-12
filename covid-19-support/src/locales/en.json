@@ -56,6 +56,8 @@
     "saturday": "Saturday",
     "sunday": "Sunday",
     "thursday": "Thursday",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
     "tuesday": "Tuesday",
     "wednesday": "Wednesday"
   },
@@ -109,6 +111,7 @@
     "notes": "Notes",
     "offers": "Offers",
     "open": "Open",
+    "open-on": "Opens {DAY} at {TIME}",
     "openinghours": "Hours",
     "orderonline": "Order & pay online",
     "payonline": "Pay online",

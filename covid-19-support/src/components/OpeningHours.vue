@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { getHoursVal } from '../utilities'
+
 export default {
   name: 'OpeningHours',
   data() {
@@ -52,36 +54,7 @@ export default {
   },
   methods: {
     getHoursRangeVal(val) {
-      return (val.title ? val.title + ' ' : '') + this.getHoursVal(val.startTime) + ' - ' + this.getHoursVal(val.endTime)
-    },
-    getHoursVal(val) {
-      if (!val) {
-        return ''
-      }
-
-      let hours = parseInt(val.split(':')[0])
-      let minutes = parseInt(val.split(':')[1])
-      let t
-
-      if (isNaN(hours)) {
-        return ''
-      }
-
-      if (hours === 0) {
-        hours = 12
-        t = 'am'
-      } else if (hours > 0 && hours < 12) {
-        t = 'am'
-      } else if (hours === 12) {
-        t = 'pm'
-      } else {
-        hours = hours - 12
-        t = 'pm'
-      }
-
-      minutes = !isNaN(minutes) && minutes > 0 ? ':' + minutes : ''
-
-      return hours + minutes + ' ' + t
+      return (val.title ? val.title + ' ' : '') + getHoursVal(val.startTime) + ' - ' + getHoursVal(val.endTime)
     }
   }
 }
@@ -102,6 +75,10 @@ export default {
 
   @media (prefers-color-scheme: dark) {
     color: theme-color-level('danger', 2);
+  }
+
+  > i {
+    color: theme-color('danger') !important;
   }
 }
 </style>

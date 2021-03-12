@@ -108,6 +108,7 @@
     "notes": "ملاحظات",
     "offers": "عروض",
     "open": "افتح",
+    "open-on": "يفتح في {DAY} الساعة {TIME}",
     "openinghours": "ساعات العمل",
     "orderonline": "اطلب وادفع عبر الإنترنت",
     "phone": "هاتف",

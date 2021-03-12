@@ -230,7 +230,11 @@ export default {
       // var open = markers.filter((c) => c[dayFilter].$t !== '0')
       // var closed = markers.filter((c) => c[dayFilter].$t == '0')
 
-      return marker.isOpen
+      if (marker.openInfo) {
+        return marker.openInfo.isOpenNow !== false
+      } else {
+        return marker.isOpen
+      }
     },
     async needSelected(val) {
       const category = await this.$api.fetchByCategory(val)
@@ -369,10 +373,10 @@ export default {
       if (!this.isAnyDaySelected(this.day)) {
         return contained
       }
-
+      console.log(contained)
       return contained.map((m) => {
         let obj = Object.assign({}, m)
-        obj.oc = true
+        obj.oc = m.oc
         return obj
       })
     },

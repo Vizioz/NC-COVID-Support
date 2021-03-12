@@ -21,7 +21,16 @@
               </div>
             </div>
           </div>
-
+          <div v-if="snippet">
+            <span
+              class="business-open"
+              :class="isOpen(business) ? 'open' : 'closed'"
+              :title="isOpen(business) ? $t('label.open') : $t('label.closed')"
+            >
+              <i class="fas fa-clock" />
+              <span>{{ getOpenClosedMessage(business) }}</span>
+            </span>
+          </div>
           <tag-list :tags="business.tags"></tag-list>
 
           <div v-if="!snippet && getAddress(business) !== ''">
@@ -225,7 +234,7 @@
 import OpeningHours from './OpeningHours.vue'
 import IconListItem from './IconListItem.vue'
 import TagList from './TagList.vue'
-import { businessIcon, optionIcon, getAddress } from '../utilities'
+import { businessIcon, optionIcon, getAddress, getHoursVal } from '../utilities'
 export default {
   name: 'BusinessDetails',
   components: {
@@ -285,6 +294,24 @@ export default {
     },
     getOptionIcon(opt) {
       return 'fas ' + optionIcon(opt)
+    },
+    getOpenClosedMessage(business) {
+      var label = this.isOpen(business) ? this.$t('label.open') : this.$t('label.closed')
+
+      if (business.isOpen && business.openInfo) {
+        var time = getHoursVal(business.openInfo.openTime)
+        var day = this.$t('dayofweek.' + business.openInfo.openDay)
+        label += '. ' + this.$t('label.open-on').replace('{DAY}', day).replace('{TIME}', time)
+      }
+
+      return label
+    },
+    isOpen(business) {
+      if (business.openInfo) {
+        return business.openInfo.isOpenNow !== false
+      } else {
+        return business.isOpen
+      }
     },
     getAddress: getAddress
   },
@@ -406,6 +433,16 @@ export default {
 }
 
 .business-snippet {
+  .business-open {
+    display: block;
+    margin-bottom: 8px;
+
+    i {
+      margin-right: 8px;
+      margin-top: 6px;
+    }
+  }
+
   @include media-breakpoint-down(sm) {
     .business-options {
       .list-item {

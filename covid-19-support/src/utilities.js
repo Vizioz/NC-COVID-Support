@@ -136,3 +136,33 @@ export function sortByDistance(a, b) {
   // names must be equal
   return 0
 }
+
+export function getHoursVal(val) {
+  if (!val) {
+    return ''
+  }
+
+  let hours = parseInt(val.split(':')[0])
+  let minutes = parseInt(val.split(':')[1])
+  let t
+
+  if (isNaN(hours)) {
+    return ''
+  }
+
+  if (hours === 0) {
+    hours = 12
+    t = 'am'
+  } else if (hours > 0 && hours < 12) {
+    t = 'am'
+  } else if (hours === 12) {
+    t = 'pm'
+  } else {
+    hours = hours - 12
+    t = 'pm'
+  }
+
+  minutes = !isNaN(minutes) && minutes > 0 ? ':' + minutes : ''
+
+  return hours + minutes + ' ' + t
+}

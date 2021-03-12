@@ -56,6 +56,8 @@
     "saturday": "Samedi",
     "sunday": "Dimanche",
     "thursday": "Jeudi",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
     "tuesday": "Mardi",
     "wednesday": "Mercredi"
   },
@@ -108,6 +110,7 @@
     "notes": "Remarques",
     "offers": "Des offres",
     "open": "Ouvrir",
+    "open-on": "Ouvre {DAY} à {TIME}",
     "openinghours": "Heures d'ouverture",
     "orderonline": "Commandez et payez en ligne",
     "phone": "Téléphone",
