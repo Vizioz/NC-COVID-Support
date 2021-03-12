@@ -105,9 +105,11 @@ export default {
       var label = item.oc ? this.$t('label.open') : this.$t('label.closed')
 
       if (item.marker.isOpen && item.marker.openInfo) {
-        var time = getHoursVal(item.marker.openInfo.openTime)
-        var day = this.$t('dayofweek.' + item.marker.openInfo.openDay)
-        label += '. ' + this.$t('label.open-on').replace('{DAY}', day).replace('{TIME}', time)
+        if (!item.marker.openInfo.isOpenNow) {
+          var time = getHoursVal(item.marker.openInfo.openTime)
+          var day = this.$t('dayofweek.' + item.marker.openInfo.openDay)
+          label += '. ' + this.$t('label.open-on').replace('{DAY}', day).replace('{TIME}', time)
+        }
       }
 
       return label

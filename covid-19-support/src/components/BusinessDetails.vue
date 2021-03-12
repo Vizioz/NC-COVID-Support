@@ -300,9 +300,11 @@ export default {
       var label = this.isOpen(business) ? this.$t('label.open') : this.$t('label.closed')
 
       if (business.isOpen && business.openInfo) {
-        var time = getHoursVal(business.openInfo.openTime)
-        var day = this.$t('dayofweek.' + business.openInfo.openDay)
-        label += '. ' + this.$t('label.open-on').replace('{DAY}', day).replace('{TIME}', time)
+        if (!business.openInfo.isOpenNow) {
+          var time = getHoursVal(business.openInfo.openTime)
+          var day = this.$t('dayofweek.' + business.openInfo.openDay)
+          label += '. ' + this.$t('label.open-on').replace('{DAY}', day).replace('{TIME}', time)
+        }
       }
 
       return label

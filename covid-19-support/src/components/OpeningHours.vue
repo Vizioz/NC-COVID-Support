@@ -81,4 +81,10 @@ export default {
     color: theme-color('danger') !important;
   }
 }
+
+.open {
+  > i {
+    color: theme-color('tertiary') !important;
+  }
+}
 </style>
