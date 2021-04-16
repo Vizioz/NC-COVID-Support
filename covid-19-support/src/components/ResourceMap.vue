@@ -169,18 +169,18 @@ export default {
       }
     },
     onEachFeatureFunction() {
-      // if (!this.enableTooltip) {
-      //   return () => {}
-      // }
       let t = this
+
       return (feature, layer) => {
-        layer.bindTooltip('<div>' + this.toTitleCase(feature.properties.CO_NAME) + '</div>', {
-          permanent: true,
-          sticky: true
-        }),
-          layer.on('click', function (e) {
-            t.$emit('region-selected', e.sourceTarget.feature)
+        if (feature.properties.hideTooltip !== true) {
+          layer.bindTooltip('<div>' + this.toTitleCase(feature.properties.CO_NAME) + '</div>', {
+            permanent: true,
+            sticky: true
           })
+        }
+        layer.on('click', function (e) {
+          t.$emit('region-selected', e.sourceTarget.feature)
+        })
       }
     },
     mapKey() {

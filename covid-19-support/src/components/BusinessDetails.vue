@@ -159,7 +159,7 @@
             v-if="!snippet"
             :openHours="business.openHours"
             :title="$t('label.openinghours')"
-            :description="business.status"
+            :description="business.status || business.statusDescription"
           ></opening-hours>
           <opening-hours
             v-if="!snippet"
